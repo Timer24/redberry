@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import DepartmentDropdown from "./DepartmentDropdown";
 import PriorityDropdown from "./PriorityDropdown";
@@ -29,31 +29,36 @@ function Filters() {
             }
         };
 
+        const filtersBarRef = useRef(null);
+
   return (
     <DropdownContext.Provider value = {{toggleDropdown, departmentOpen, setDepartmentOpen, priorityOpen, setPriorityOpen, employeeOpen, setEmployeeOpen}}>
-    <div className="absolute top-[233px] left-[120px] w-[688px] mb-[40px] h-[44px] rounded-[10px] border border-[#DEE2E6] flex items-center justify-around">
-      <button onClick={() => toggleDropdown("department")} className={`relative flex items-center ${departmentOpen ? "text-[#8338EC]": ""}`}>
+    <div ref = {filtersBarRef} className="absolute top-[233px] left-[120px] w-[688px] mb-[40px] h-[44px] rounded-[10px] border-[0.5px] border-[#DEE2E6] flex items-center justify-around">
+      <button onClick={() => toggleDropdown("department")}
+       className={`font-style-1 relative flex items-center ${departmentOpen ? "text-[#8338EC]": ""}`}>
         დეპარტამენტი
         <IoIosArrowDown className="mt-[3px] ml-[8px]"/>
         
       </button>
-      <button onClick={() => toggleDropdown("priority")} className={`relative flex items-center ${priorityOpen ? "text-[#8338EC]": ""}`}>
+      <button onClick={() => toggleDropdown("priority")}
+       className={`font-style-1 relative flex items-center ${priorityOpen ? "text-[#8338EC]": ""}`}>
         პრიორიტეტი
         <IoIosArrowDown className="mt-[3px] ml-[8px]"/>
         
       </button>
-      <button onClick={() => toggleDropdown("employee")} className={`relative flex items-center ${employeeOpen ? "text-[#8338EC]": ""}`}>
+      <button onClick={() => toggleDropdown("employee")}
+       className={`font-style-1 relative flex items-center ${employeeOpen ? "text-[#8338EC]": ""}`}>
         თანამშრომელი
         <IoIosArrowDown className="mt-[3px] ml-[8px]"/>
       </button>
         {employeeOpen && (
-            <EmployeeDropdown closeDropdown={() => toggleDropdown("employee")}/>
+            <EmployeeDropdown filtersBarRef = {filtersBarRef}/>
         )}
         {priorityOpen && (
-            <PriorityDropdown closeDropdown={() => toggleDropdown("priority")}/>
+            <PriorityDropdown filtersBarRef = {filtersBarRef}/>
         )}
         {departmentOpen && (
-            <DepartmentDropdown closeDropdown={() => toggleDropdown("department")}/>
+            <DepartmentDropdown filtersBarRef = {filtersBarRef}/>
         )}
       
     </div>

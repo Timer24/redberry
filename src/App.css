@@ -1,7 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+GO:wght@400&display=swap');
+
+
 .btn-1 {
-  @apply w-[225px] h-[39px] rounded-[5px] border-[#8338EC] border px-[20px] py-[10px] text-black font-[FiraGO] font-normal text-[16px] whitespace-nowrap cursor-pointer;
+  @apply w-[225px] h-[39px] rounded-[5px] border-[#8338EC] border px-[20px] py-[10px] text-black font-sans font-normal text-[16px] whitespace-nowrap cursor-pointer;
 }
 
-.btn-2{
-  @apply w-[268px] h-[40px] rounded-[5px] bg-[#8338EC] px-[20px] py-[10px] gap-[4px] font-[FiraGO] font-normal text-[16px] text-white
+.btn-2 {
+  @apply w-[268px] h-[40px] rounded-[5px] bg-[#8338EC] px-[20px] py-[10px] gap-[4px] font-sans font-normal text-[16px] text-white;
+}
+
+.font-style-1 {
+  @apply font-sans font-normal text-[16px] leading-[100%] tracking-[0%];
+  font-family: 'FiraGO', sans-serif; /* Apply custom font */
 }

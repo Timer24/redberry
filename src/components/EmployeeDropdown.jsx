@@ -1,12 +1,28 @@
-import React from 'react';
+import React, {useRef, useEffect} from 'react';
 
 import { useDropdown } from '../DropdownContext';
 
-function EmployeeDropdown() {
+function EmployeeDropdown({filtersBarRef}) {
     const { toggleDropdown } = useDropdown();
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)&&
+            filtersBarRef.current && !filtersBarRef.current.contains(event.target)) {
+                toggleDropdown("employee"); 
+            }
+        }
+
+        
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [toggleDropdown, filtersBarRef]);
 
     return (
-        <div className="absolute top-[55px] w-[688px] h-[274px] bg-white border border-[#8338EC] rounded-md flex flex-col justify-between">
+        <div ref = {dropdownRef} className="absolute top-[55px] w-[688px] h-[274px] bg-white border border-[#8338EC] rounded-md flex flex-col justify-between">
             <div className = "mt-[20px] ml-[20px]">
                 <ul>
                     <li className="p-2 hover:text-purple-600 cursor-pointer">Option 1</li>

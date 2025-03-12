@@ -7,6 +7,13 @@ module.exports = {
     "./src/components/DepartmentDropdown.jsx",
     "./src/components/PriorityDropdown.jsx",
     "./src/components/EmployeeDropdown.jsx",
+    "./src/components/DepartmentsCheckboxes.jsx",
+    "./src/components/AddEmployee.jsx",
+    "./src/components/Buttons.jsx",
+    "./src/components/Modal.jsx",
+    "./src/components/ButtonsEmployees.jsx",
+    "./src/components/Forms.jsx",
+
   ],
   theme: {
     extend: {},
