@@ -13,6 +13,8 @@ module.exports = {
     "./src/components/Modal.jsx",
     "./src/components/ButtonsEmployees.jsx",
     "./src/components/Forms.jsx",
+    "./src/components/FileUpload.jsx",
+    "./src/components/EmployeeDepartment.jsx",
 
   ],
   theme: {

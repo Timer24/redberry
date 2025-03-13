@@ -5,7 +5,7 @@ const useFetch = (urlExtension) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const token = "9e6a1666-5977-4eef-a0ff-93d8223ce397";
+  const token = "9e6c7179-4fdc-47e2-bedf-6f3fa135713d";
 
   useEffect(() => {
     const fetchData = async () => {

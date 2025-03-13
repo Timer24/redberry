@@ -5,20 +5,28 @@ const useFetchPost = (urlExtension, body) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const token = "9e6a1666-5977-4eef-a0ff-93d8223ce397";
+  const token = "9e6c7179-4fdc-47e2-bedf-6f3fa135713d"; // Or dynamically retrieve it if needed
 
   const postData = async () => {
     setLoading(true);
     try {
+      const formData = new FormData();
+
+      for (const key in body) {
+        if (Object.hasOwnProperty.call(body, key)) {
+          formData.append(key, body[key]);
+        }
+      }
+
       const response = await fetch(
-        `https://momentum.redberryinternship.ge/api/${urlExtension}`,
+        `https://momentum.redberryinternship.ge/api/${urlExtension}`, 
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            
           },
-          body: JSON.stringify(body),
+          body: formData, 
         }
       );
 
