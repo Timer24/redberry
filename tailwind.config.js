@@ -14,10 +14,26 @@ module.exports = {
     "./src/components/ModalComponent/Forms.jsx",
     "./src/components/ModalComponent/FileUpload.jsx",
     "./src/components/ModalComponent/EmployeeDepartment.jsx",
+    "./src/components/CreateTask/CreateNewTask.jsx",
+    "./src/components/CreateTask/TaskCreator.jsx",
+    "./src/components/CreateTask/MiniComponents/AddTaskButton.jsx",
+    "./src/components/CreateTask/MiniComponents/Deadline.jsx",
+    "./src/components/CreateTask/MiniComponents/Department.jsx",
+    "./src/components/CreateTask/MiniComponents/Description.jsx",
+    "./src/components/CreateTask/MiniComponents/Employee.jsx",
+    "./src/components/CreateTask/MiniComponents/PriorityStatus.jsx",
+    "./src/components/CreateTask/MiniComponents/Title.jsx",
+    "./src/components/CreateTask/MiniComponents/Priority.jsx",
+    "./src/components/CreateTask/MiniComponents/Status.jsx",
+
 
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontWeight: {
+        'custom-350': 350,
+      }
+    },
   },
   plugins: [],
 }

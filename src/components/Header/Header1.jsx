@@ -1,16 +1,22 @@
 import React from 'react';
 import Logo from './Logo';
 import Buttons from './Buttons';
+import { useNavigate } from 'react-router';
 
 function Header1({ handleOpenModal }) {
+
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/')
+  }
 
   return (
     <div>
       <div className="px-[120px] py-[30py] h-[100px] w-[1920] flex justify-between items-center">
-        <Logo/>
+        <Logo onClick = {handleLogoClick}/>
         <Buttons/>
       </div>
-      <p className="ml-[120px] mt-[30px] font-[FiraGO] font-semibold text-[34px] leading-[100%] tracking-[0%]">დავალებების გვერდი</p>
     </div>
   );
 }

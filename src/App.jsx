@@ -4,6 +4,8 @@ import Header1 from './components/Header/Header1'
 import '@fontsource/firago';
 import Filters from './components/Filters/Filters'
 import Modal from './components/ModalComponent/Modal'
+import CreateNewTask from './components/CreateTask/CreateNewTask';
+import { BrowserRouter as Router, Route, Routes } from "react-router";
 
 
 function App() {
@@ -18,12 +20,26 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Header1 handleOpenModal={handleOpenModal} />
-      <Filters />
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
-    </div>
+      <div className="App">
+
+        <Routes>
+          <Route path = "/" element = {<LandingPage />}/>
+          <Route path = "/create-task" element = {<CreateNewTask/>}/>
+        </Routes>
+
+      </div>
   );
+
+  function LandingPage(){
+    return (
+      <div>
+        <Header1 handleOpenModal={handleOpenModal}/>
+        <p className="TaskPage1">დავალებების გვერდი</p>
+        <Filters/>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}/>
+      </div>
+    )
+  }
 }
 
 export default App;

@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
 import Modal from '../ModalComponent/Modal';
 import { FaPlus } from "react-icons/fa";
+import { useNavigate } from 'react-router';
 
 function Buttons () {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -13,6 +15,11 @@ function Buttons () {
     setIsModalOpen(false);
   }
 
+  const handleCreateNewTask = () => {
+    console.log("Navigating to /create-task")
+    navigate('/create-task');
+  }
+
   return (
     <div className = "flex gap-[40px]">
         <button onClick = {handleOpenModal}
@@ -20,7 +27,8 @@ function Buttons () {
             თანამშრომლის შექმნა
         </button>
 
-        <button className = "font-style-1 flex justify-center items-center w-[268px] h-[40px] top-[20px] left-[20px] rounded-[5px] px-[10px] py-[20px] gap-[4px] text-white bg-[#8338EC] transition-all duration-300 ease-out hover:bg-[#B588F4]">
+        <button onClick = {handleCreateNewTask}
+        className = "font-style-1 flex justify-center items-center w-[268px] h-[40px] top-[20px] left-[20px] rounded-[5px] px-[10px] py-[20px] gap-[4px] text-white bg-[#8338EC] transition-all duration-300 ease-out hover:bg-[#B588F4]">
           <FaPlus className = "w-[12px] h-[12px]"/> შექმენი ახალი დავალება
         </button>
         <Modal isOpen = {isModalOpen} onClose = {handleCloseModal}/>

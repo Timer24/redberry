@@ -13,3 +13,10 @@
   @apply font-[FiraGO] font-normal text-[16px] leading-[100%] tracking-[0%];
 }
 
+.TaskPage1 {
+  @apply ml-[120px] mt-[30px] font-[FiraGO] font-semibold text-[34px] leading-[100%] tracking-[0%] text-[#212529];
+}
+
+
+
+
