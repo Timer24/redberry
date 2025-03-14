@@ -10,19 +10,19 @@ function Modal({ isOpen, onClose }) {
   const [formState, setFormState] = useState({
     name: '',
     surname: '',
-    avatar: '', // You'll need to handle this if you're uploading an avatar
-    department_id: '', // Use department_id instead of department
+    avatar: '', 
+    department_id: '', 
   });
   const [validationState, setValidationState] = useState({
     name: null,
     surname: null,
-    department_id: null, // Ensure department_id validation is done
+    department_id: null, 
   });
   const [fileError, setFileError] = useState('');
   const [isFileValid, setIsFileValid] = useState(false);
   const [isDepartmentSelected, setIsDepartmentSelected] = useState(false);
 
-  const { postData, loading, error, data } = useFetchPost('employees', formState); // Pass formState to post data
+  const { postData, loading, error, data } = useFetchPost('employees', formState); 
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ function Modal({ isOpen, onClose }) {
     setIsDepartmentSelected(isSelected);
     setFormState((prev) => ({
       ...prev,
-      department_id: department_id, // Update department_id when a department is selected
+      department_id: department_id, 
     }));
     setValidationState((prev) => ({ ...prev, department_id: isSelected }));
   };
@@ -113,14 +113,14 @@ function Modal({ isOpen, onClose }) {
         formData.append('department_id', formState.department_id);
         
         console.log(formState.department_id)
-        // If there's a file (avatar), append it to the FormData
+        
         if (formState.avatar) {
           formData.append('avatar', formState.avatar);
         }
         
         console.log(formData)
-        // Now use your `useFetchPost` custom hook with the new FormData
-        postData(formData); // Pass FormData to postData instead of the plain formState
+        
+        postData(formData); 
       }
     };
     
@@ -156,7 +156,7 @@ function Modal({ isOpen, onClose }) {
             <ButtonsEmployees
               disabled={!isFormValid}
               onClose={handleClose}
-              onAddEmployee={handleAddEmployee} // Pass handleAddEmployee to the button
+              onAddEmployee={handleAddEmployee} 
             />
           </div>
           <div className="absolute left-0 bottom-[50px]">

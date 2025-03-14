@@ -1,20 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/components/Header1.jsx",
+    "./src/components/Header/Header1.jsx",
     "./src/app.jsx",
-    "./src/components/Filters.jsx",
-    "./src/components/DepartmentDropdown.jsx",
-    "./src/components/PriorityDropdown.jsx",
-    "./src/components/EmployeeDropdown.jsx",
+    "./src/components/Filters/Filters.jsx",
+    "./src/components/Filters/DepartmentDropdown.jsx",
+    "./src/components/Filters/PriorityDropdown.jsx",
+    "./src/components/Filters/EmployeeDropdown.jsx",
     "./src/components/DepartmentsCheckboxes.jsx",
-    "./src/components/AddEmployee.jsx",
-    "./src/components/Buttons.jsx",
-    "./src/components/Modal.jsx",
-    "./src/components/ButtonsEmployees.jsx",
-    "./src/components/Forms.jsx",
-    "./src/components/FileUpload.jsx",
-    "./src/components/EmployeeDepartment.jsx",
+    "./src/components/Header/Buttons.jsx",
+    "./src/components/ModalComponent/Modal.jsx",
+    "./src/components/ModalComponent/ButtonsEmployees.jsx",
+    "./src/components/ModalComponent/Forms.jsx",
+    "./src/components/ModalComponent/FileUpload.jsx",
+    "./src/components/ModalComponent/EmployeeDepartment.jsx",
 
   ],
   theme: {

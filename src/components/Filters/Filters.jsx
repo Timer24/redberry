@@ -3,7 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import DepartmentDropdown from "./DepartmentDropdown";
 import PriorityDropdown from "./PriorityDropdown";
 import EmployeeDropdown from "./EmployeeDropdown"
-import { DropdownContext } from "../DropdownContext";
+import { DropdownContext } from "../../DropdownContext";
 
 function Filters() {
     

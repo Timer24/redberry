@@ -10,7 +10,6 @@
 }
 
 .font-style-1 {
-  @apply font-sans font-normal text-[16px] leading-[100%] tracking-[0%];
-  font-family: 'FiraGO', sans-serif; /* Apply custom font */
+  @apply font-[FiraGO] font-normal text-[16px] leading-[100%] tracking-[0%];
 }
 

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import './App.css';
-import Header1 from './components/Header1'
+import Header1 from './components/Header/Header1'
 import '@fontsource/firago';
-import Filters from './components/Filters'
-import Modal from './components/Modal/Modal'
+import Filters from './components/Filters/Filters'
+import Modal from './components/ModalComponent/Modal'
 
 
 function App() {
