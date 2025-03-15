@@ -24,7 +24,7 @@ function App() {
 
         <Routes>
           <Route path = "/" element = {<LandingPage />}/>
-          <Route path = "/create-task" element = {<CreateNewTask/>}/>
+          <Route path = "/create-task" element = {<CreateNewTask isModalOpen = {handleOpenModal} onClose = {handleCloseModal}/>}/>
         </Routes>
 
       </div>

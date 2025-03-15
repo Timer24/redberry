@@ -16,20 +16,23 @@ export default function Priority({ isPrioritySelected }) {
     setSelectedPriority({ name: priority_name, icon: priority_icon });
     setIsOpen(false);
     isPrioritySelected(true, priority_id);
-    localStorage.setItem('selectedPriority', JSON.stringify({ name: priority_name, icon: priority_icon }));
+    localStorage.setItem('selectedPriority', JSON.stringify({ name: priority_name, icon: priority_icon, id: priority_id }));
   };
 
   useEffect(() => {
     const savedPriority = localStorage.getItem('selectedPriority');
     if (savedPriority) {
-      setSelectedPriority(JSON.parse(savedPriority));
+      const parsedPriority = JSON.parse(savedPriority);
+      setSelectedPriority(parsedPriority);
+      isPrioritySelected(true, parsedPriority.id);
     } else if (priorities && priorities.length > 0) {
-      const mediumPriority = priorities.find(p => p.id === 2);
-      if (mediumPriority) {
-        setSelectedPriority({ name: mediumPriority.name, icon: mediumPriority.icon });
+      const defaultPriority = priorities.find(s => s.id === 1);
+      if (defaultPriority) {
+        setSelectedPriority(defaultPriority);
       }
     }
   }, [priorities]);
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {

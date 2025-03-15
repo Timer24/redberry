@@ -2,18 +2,28 @@ import React, { useEffect, useState, useRef } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import useFetchGet from '../../../hooks/useFetchGet';
 import PlusSign from '../../images/plus-sign.png';
+import Modal from '../../../components/ModalComponent/Modal'
 
-function EmployeeDropdown({ isEmployeeSelected, selectedDepartment }) {
+function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const { data: employees, error, loading } = useFetchGet('employees');
   const [isOpen, setIsOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     setSelectedEmployee(null);
     isEmployeeSelected(false, null);
   }, [selectedDepartment]);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  }
+
+  const handleCloseModal = () =>{
+    setIsModalOpen(false);
+  }
 
   useEffect(() => {
     if (selectedDepartment && employees) {
@@ -43,6 +53,8 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment }) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  
+
   return (
     <div className="mb-[75px] w-[550px] h-auto relative" ref={dropdownRef}>
       <p className={`font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%] mb-1 ${selectedDepartment ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`}>პასუხისმგებელი თანამშრომელი*</p>
@@ -55,13 +67,14 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment }) {
         </span>
         <IoIosArrowDown className={`transition-transform ${isOpen ? 'rotate-180' : ''} ${selectedDepartment ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`} />
       </div>
+      <Modal isOpen = {isModalOpen} onClose = {handleCloseModal}/>
       {isOpen && (
         <div className="absolute left-0 top-full w-[550px] bg-white border border-[#8338EC] border-t-0 h-[278px] overflow-y-auto z-10 rounded-b-[6px] shadow-md">
           {loading && <p className="p-2 text-gray-500 text-center">Loading...</p>}
           {error && <p className="p-2 text-red-500 text-center">Error: {error}</p>}
           <div className="w-full h-[46px] px-[20px] flex items-center gap-[6px] hover:bg-gray-200 cursor-pointer font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%]">
             <img src={PlusSign} className="text-[#8338EC] w-[18px] h-[18px]" alt="+" />
-            <span className="text-[#8338EC]">თანამშრომლის დამატება</span>
+            <span onClick = {handleOpenModal}  className="text-[#8338EC]">თანამშრომლის დამატება</span>
           </div>
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((employee) => (
@@ -76,6 +89,8 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment }) {
             !loading && <p className="p-2 text-gray-500 text-center">No employees available</p>
           )}
         </div>
+
+          
       )}
     </div>
   );

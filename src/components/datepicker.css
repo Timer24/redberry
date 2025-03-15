@@ -1,0 +1,76 @@
+.custom-datepicker {
+    width: 318px !important;
+    height: 336px !important;
+    box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d3a3f7;
+    background: white;
+    padding: 16px;
+    position: absolute;
+    z-index: 9999;
+    gap: 22px;
+  }
+
+  .custom-datepicker .react-datepicker__day-name {
+    font-size: 14px;                     
+    color: #333;       
+    margin-bottom:5px;
+    width:30px;
+  }
+
+  .custom-datepicker .react-datepicker__day--today {
+    background-color: #8338ec;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .custom-datepicker .react-datepicker__day--today:hover {
+    background-color: #5e2ca5;
+  }
+
+  .custom-datepicker .react-datepicker__header {
+    background-color: transparent !important;  
+    border:none;
+  }
+
+  .custom-datepicker .react-datepicker__month {
+    margin-top:0px;
+    margin-right:15px;
+  }
+
+  .custom-datepicker .react-datepicker__day--selected {
+    background-color: transparent !important;
+    border: none !important;
+  }
+  
+  .custom-datepicker .react-datepicker__triangle {
+    display: none;
+  }
+  
+  .custom-datepicker-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  .custom-datepicker-footer button {
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+  
+  .custom-datepicker-footer .cancel-btn {
+    background: none;
+    color: #8338ec;
+    width: 39px;
+    height: 16px;
+  }
+  
+  .custom-datepicker-footer .ok-btn {
+    background: none;
+    color: #8338ec;
+    width: 17px;
+    height: 16px;
+  }
+  
