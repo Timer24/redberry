@@ -25,8 +25,9 @@ module.exports = {
     "./src/components/CreateTask/MiniComponents/Title.jsx",
     "./src/components/CreateTask/MiniComponents/Priority.jsx",
     "./src/components/CreateTask/MiniComponents/Status.jsx",
-
-
+    "./src/components/Cards/Cards.jsx",
+    "./src/components/Cards/TaskCard.jsx",
+    "./src/components/Cards/TaskColumn.jsx",
   ],
   theme: {
     extend: {
