@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GoComment } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
 import { MdDragIndicator } from "react-icons/md";
+import Comments from './OpenCards/Comments';
+
+const BEARER_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
 const statusColors = {
   1: 'border-[#FFA41B]', 
@@ -46,7 +49,37 @@ const getShortDepartmentName = (id, name) => {
 
 function TaskCard({ task }) {
   const navigate = useNavigate();
+  const [commentCount, setCommentCount] = useState(0);
   
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}/comments`, {
+          headers: {
+            'Authorization': `Bearer ${BEARER_TOKEN}`,
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch comments');
+        }
+
+        const comments = await response.json();
+        const total = comments.reduce((acc, comment) => {
+          return acc + 1 + (comment.sub_comments?.length || 0);
+        }, 0);
+        
+        setCommentCount(total);
+      } catch (err) {
+        console.error('Error fetching comments:', err);
+      }
+    };
+
+    if (task.id) {
+      fetchCommentCount();
+    }
+  }, [task.id]);
+
   const {
     attributes,
     listeners,
@@ -73,6 +106,7 @@ function TaskCard({ task }) {
   const handleCardClick = () => {
     navigate(`/tasks/${task.id}`);
   };
+  
 
   return (
     <div
@@ -128,7 +162,7 @@ function TaskCard({ task }) {
         </div>
         <div className="flex items-center gap-1">
           <GoComment className="text-[#9B9B9B]"/>
-          <span className="font-[FiraGO] text-sm text-[#9B9B9B]">{task.comments_count || 8}</span>
+          <span className="font-[FiraGO] text-sm text-[#9B9B9B]">{commentCount}</span>
         </div>
       </div>
     </div>

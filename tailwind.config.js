@@ -31,6 +31,7 @@ module.exports = {
     "./src/components/Cards/OpenCards/OpenCard.jsx",
     "./src/components/Cards/OpenCards/CardDescription.jsx",
     "./src/components/Cards/OpenCards/TaskDetails.jsx",
+    "./src/components/Cards/OpenCards/Comments.jsx",
   ],
   theme: {
     extend: {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AddTaskButton({ disabled, onTaskCreation }) {
+function AddTaskButton({ disabled, onTaskCreation}) {
   return (
     <div className="flex absolute bottom-0 right-0 gap-[22px]">
       <button
@@ -10,7 +10,7 @@ function AddTaskButton({ disabled, onTaskCreation }) {
           cursor: disabled ? 'not-allowed' : 'pointer',
           opacity: disabled ? 0.5 : 1,
         }}
-        onClick={onTaskCreation}
+        onClick={{onTaskCreation}}
       >
         დავალების შექმნა
       </button>

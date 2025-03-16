@@ -3,9 +3,9 @@ import React from 'react';
 import Header1 from '../../Header/Header1';
 import CardDescription from './CardDescription'
 import TaskDetails from './TaskDetails';
+import Comments from './Comments';
 
 function OpenCard() {
-
   const params = useParams();
   const taskId = params.taskId;
   
@@ -22,6 +22,10 @@ function OpenCard() {
         <div className = "w-[493px] h-[277px] top-[442px] left-[120px] gap-[18px] absolute">
           <TaskDetails id = {taskId}/>
         </div>
+ 
+        
+        <Comments id={taskId}/>
+        
     </div>
   )
 }
