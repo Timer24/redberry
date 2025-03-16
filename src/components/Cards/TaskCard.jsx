@@ -2,7 +2,8 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GoComment } from "react-icons/go";
-
+import { useNavigate } from 'react-router-dom';
+import { MdDragIndicator } from "react-icons/md";
 
 const statusColors = {
   1: 'border-[#FFA41B]', 
@@ -43,19 +44,25 @@ const getShortDepartmentName = (id, name) => {
   return departmentShortNames[id] || name;
 };
 
-
 function TaskCard({ task }) {
+  const navigate = useNavigate();
+  
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: task.id });
+    isDragging
+  } = useSortable({
+    id: task.id
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.5 : 1,
+    width: '100%'
   };
 
   const formatDate = (dateString) => {
@@ -63,39 +70,47 @@ function TaskCard({ task }) {
     return `${date.getDate()} იანვ, ${date.getFullYear()}`;
   };
 
+  const handleCardClick = () => {
+    navigate(`/tasks/${task.id}`);
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className={`w-[381px] h-[217px] bg-white p-6 rounded-[10px] shadow-sm mb-4 cursor-move border ${statusColors[task.status.id]} border-[1px] flex flex-col justify-between`}
+      className={`w-[381px] h-[217px] bg-white p-6 rounded-[10px] shadow-sm mb-4 cursor-pointer border ${statusColors[task.status.id]} border-[1px] flex flex-col justify-between relative group`}
+      onClick={handleCardClick}
     >
+      <div 
+        {...attributes} 
+        {...listeners}
+        className="absolute top-2 right-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+      >
+        <MdDragIndicator size={20} />
+      </div>
+
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3 relative">
             {task.priority && (
               <span className={`p-[4px] w-[86px] h-[26px] gap-[4px] flex text-xs font-[FiraGO] border-[0.5px] rounded-[5px] justify-center ${priorityColors[task.priority.id]}`}>
-                <img src = {task.priority.icon} alt = {task.priority.name}/>
+                <img src={task.priority.icon} alt={task.priority.name}/>
                 {task.priority.name}
               </span>
             )}
             
-            <div className = {`w-[88px] h-[24px] rounded-[15px] px-[9px] py-[5px] gap-[10px] flex items-center justify-center text-[12px] text-[white] font-[FiraGO] font-normal leading-[100%] tracking-[0%] ${getDepartmentColor(task.department.id)}`}>
+            <div className={`w-[88px] h-[24px] rounded-[15px] px-[9px] py-[5px] gap-[10px] flex items-center justify-center text-[12px] text-[white] font-[FiraGO] font-normal leading-[100%] tracking-[0%] ${getDepartmentColor(task.department.id)}`}>
                 {getShortDepartmentName(task.department.id, task.department.name)}
             </div>
           </div>
           <span className="text-[#212529] text-[12px] font-[FiraGO] leading-[100%] tracking-[0%] whitespace-nowrap ">{formatDate(task.due_date)}</span>
         </div>
 
-
         <div className="flex items-center gap-2">
             <h3 className="font-[FiraGO] text-[15px] font-medium text-[#212529] leading-[100%] tracking-[0%]">{task.name}</h3>
         </div>
         
         <p className="font-[FiraGO] text-[14px] text-[#343A40] line-clamp-2">{task.description}</p>
-
-
       </div>
       
       <div className="flex items-center justify-between mt-auto">
@@ -112,7 +127,7 @@ function TaskCard({ task }) {
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <GoComment className = "text-[#9B9B9B]"/>
+          <GoComment className="text-[#9B9B9B]"/>
           <span className="font-[FiraGO] text-sm text-[#9B9B9B]">{task.comments_count || 8}</span>
         </div>
       </div>

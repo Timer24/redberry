@@ -28,6 +28,9 @@ module.exports = {
     "./src/components/Cards/Cards.jsx",
     "./src/components/Cards/TaskCard.jsx",
     "./src/components/Cards/TaskColumn.jsx",
+    "./src/components/Cards/OpenCards/OpenCard.jsx",
+    "./src/components/Cards/OpenCards/CardDescription.jsx",
+    "./src/components/Cards/OpenCards/TaskDetails.jsx",
   ],
   theme: {
     extend: {

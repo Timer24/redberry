@@ -142,13 +142,17 @@ function Cards() {
       collisionDetection={pointerWithin}
     >
       <div className="absolute top-[356px] left-[120px] right-[120px]">
-        <div className="flex gap-8">
-          {statuses.map(status => (
-            <TaskColumn
-              key={status.id}
-              status={status}
-              tasks={tasks.filter(task => task.status.id === status.id)}
-            />
+        <div className="flex">
+          {statuses.map((status, index) => (
+            <React.Fragment key={status.id}>
+              <TaskColumn
+                status={status}
+                tasks={tasks.filter(task => task.status.id === status.id)}
+              />
+              {index < statuses.length - 1 && (
+                <div className="w-[42px]" />
+              )}
+            </React.Fragment>
           ))}
         </div>
       </div>
