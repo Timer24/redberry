@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDropdown } from '../../DropdownContext';
 import useFetchGet from '../../hooks/useFetchGet';
 
-function EmployeeDropdown({ filtersBarRef }) {
+function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee }) {
   const { toggleDropdown } = useDropdown();
   const dropdownRef = useRef(null);
   const { data: employees, error, loading } = useFetchGet('employees');
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [tempSelectedEmployee, setTempSelectedEmployee] = useState(null); 
 
   useEffect(() => {
@@ -25,6 +24,7 @@ function EmployeeDropdown({ filtersBarRef }) {
   }, [toggleDropdown, filtersBarRef]);
 
   const handleCheckboxChange = (event) => {
+    console.log(event.target);
     const { value } = event.target;
     setTempSelectedEmployee(value);
   };
@@ -34,9 +34,15 @@ function EmployeeDropdown({ filtersBarRef }) {
     toggleDropdown("employee");
   };
 
+  const removeEmployee = () => {
+    setSelectedEmployee(null);
+  };
+
+  
+
   return (
-    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[298px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
-      <div className="flex-grow overflow-y-auto pr-[5px] mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
+    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] z-50  h-[298px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
+      <div className="flex-grow overflow-y-auto pr-[5px] z-50  mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
         {loading ? (
           <div className="m-auto">Loading employees...</div>
         ) : error ? (
@@ -50,10 +56,10 @@ function EmployeeDropdown({ filtersBarRef }) {
                     
                     <input
                       type="checkbox"
-                      id={`employee-${employee.id}`}
+                      id={`${employee.id}`}
                       value={employee.id}
                       onChange={handleCheckboxChange}
-                      checked={tempSelectedEmployee === employee.id.toString()} 
+                      checked={tempSelectedEmployee === employee.id} 
                       className="appearance-none"
                     />
                     

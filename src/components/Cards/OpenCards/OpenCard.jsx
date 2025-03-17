@@ -5,7 +5,8 @@ import CardDescription from './CardDescription'
 import TaskDetails from './TaskDetails';
 import Comments from './Comments';
 
-function OpenCard() {
+function OpenCard({totalComments}) {
+
   const params = useParams();
   const taskId = params.taskId;
   

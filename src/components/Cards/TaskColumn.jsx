@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import TaskCard from './TaskCard';
@@ -18,15 +18,49 @@ const emptyStateMessages = {
   4: 'დასრულებული ტასკები ცარიელია'
 };
 
-function TaskColumn({ status, tasks }) {
+function TaskColumn({ status, tasks, selectedEmployee, selectedPriorities, selectedDepartments}) {
+
+   const [filteredTasks, setFilteredTasks] = useState([]);
+  
   const { setNodeRef, isOver } = useDroppable({
     id: status.id.toString(),
   });
 
+  useEffect(() => {
+    let filtered = tasks;
+
+    
+    if (selectedEmployee) {
+        filtered = filtered.filter(task => {
+            return Number(task.employee?.id) === Number(selectedEmployee);
+        });
+    }
+
+    if (selectedPriorities && selectedPriorities.length > 0) {
+        
+        filtered = filtered.filter(task => {
+            
+            return selectedPriorities.includes(task.priority?.id.toString());
+        });
+    }
+    if (selectedDepartments && selectedDepartments.length > 0) {
+        
+      filtered = filtered.filter(task => {
+          
+          return selectedDepartments.includes(task.department?.id.toString());
+          
+      });
+  }
+
+    setFilteredTasks(filtered);
+}, [tasks, selectedEmployee, selectedPriorities]); 
+
   const needsScroll = tasks.length > 4;
 
   return (
+    
     <div className={`${needsScroll ? 'w-[399px]' : 'w-[381px]'}`}>
+      
       <div className={`h-[54px] w-[381px] rounded-[10px] mb-6 ${statusColors[status.id]} flex items-center justify-center px-6`}>
         <h2 className="font-[FiraGO] text-[20px] font-medium text-white leading-[100%] tracking-[0%]">{status.name}</h2>
       </div>
@@ -40,14 +74,14 @@ function TaskColumn({ status, tasks }) {
       >
         <div className="w-[381px]">
           <SortableContext
-            items={tasks.map(task => task.id)}
+            items={filteredTasks.map(task => task.id)}
             strategy={verticalListSortingStrategy}
           >
-            {tasks.map((task) => (
+            {filteredTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </SortableContext>
-          {tasks.length === 0 && (
+          {filteredTasks.length === 0 && (
             <div className="w-[381px] h-[217px] rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 bg-opacity-50 flex flex-col items-center justify-center gap-4 text-gray-400">
               <FaTasks className="scale-150" />
               <p className="font-[FiraGO] text-[16px]">{emptyStateMessages[status.id]}</p>

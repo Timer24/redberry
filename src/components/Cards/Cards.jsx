@@ -6,12 +6,17 @@ import TaskCard from './TaskCard';
 
 const BEARER_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
-function Cards() {
+function Cards({selectedEmployee, selectedPriorities, selectedDepartments}) {
+
+  console.log("cards", selectedDepartments)
+
   const [tasks, setTasks] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,6 +153,9 @@ function Cards() {
               <TaskColumn
                 status={status}
                 tasks={tasks.filter(task => task.status.id === status.id)}
+                selectedEmployee={selectedEmployee}
+                selectedPriorities={selectedPriorities}
+                selectedDepartments={selectedDepartments}
               />
               {index < statuses.length - 1 && (
                 <div className="w-[42px]" />
@@ -161,7 +169,7 @@ function Cards() {
         duration: 200,
         easing: 'ease-out',
       }}>
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+        {activeTask ? <TaskCard task={activeTask}/> : null}
       </DragOverlay>
     </DndContext>
   );

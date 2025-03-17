@@ -12,6 +12,12 @@ import OpenCard from './components/Cards/OpenCards/OpenCard'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedPriorities, setSelectedPriorities] = useState([]);
+  const [selectedDepartments, setSelectedDepartments] = useState([]);
+
+  console.log(selectedDepartments);
+
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -20,8 +26,10 @@ function App() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  
 
   return (
+
     <div className="App">
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -36,9 +44,11 @@ function App() {
       <div>
         <Header1 handleOpenModal={handleOpenModal} />
         <p className="TaskPage1">დავალებების გვერდი</p>
-        <Filters />
+        <Filters setSelectedEmployee={setSelectedEmployee} selectedEmployee={selectedEmployee}
+                 setSelectedPriorities = {setSelectedPriorities} selectedPriorities={selectedPriorities}
+                 setSelectedDepartments = {setSelectedDepartments} selectedDepartments ={selectedDepartments}/>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
-        <Cards />
+        <Cards selectedEmployee = {selectedEmployee} selectedPriorities={selectedPriorities} selectedDepartments = {selectedDepartments}/>
       </div>
     );
   }

@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDropdown } from '../../DropdownContext';
 import useFetchGet from '../../hooks/useFetchGet';
 
-function PriorityDropdown({ filtersBarRef }) {
+function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriorities }) {
   const { toggleDropdown } = useDropdown();
   const dropdownRef = useRef(null);
   const { data: priorities, error, loading } = useFetchGet('priorities');
 
   
-  const [selectedPriorities, setSelectedPriorities] = useState([]);
+  
   const [tempSelectedPriorities, setTempSelectedPriorities] = useState([]); 
 
   const handleCheckboxChange = (event) => {
@@ -28,6 +28,7 @@ function PriorityDropdown({ filtersBarRef }) {
     toggleDropdown("priority"); 
   };
 
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -44,7 +45,7 @@ function PriorityDropdown({ filtersBarRef }) {
   }, [toggleDropdown, filtersBarRef]);
 
   return (
-    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[230px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
+    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[230px] z-50 bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
       <div className="flex-grow overflow-y-auto pr-[5px] mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
         {loading ? (
           <div className="m-auto">Loading priorities...</div>
@@ -59,7 +60,7 @@ function PriorityDropdown({ filtersBarRef }) {
                     
                     <input
                       type="checkbox"
-                      id={`priority-${priority.id}`}
+                      id={`${priority.id}`}
                       value={priority.id}
                       onChange={handleCheckboxChange}
                       checked={tempSelectedPriorities.includes(priority.id.toString())} 

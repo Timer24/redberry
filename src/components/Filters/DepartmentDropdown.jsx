@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDropdown } from '../../DropdownContext';
 import useFetchGet from '../../hooks/useFetchGet';
 
-function DepartmentDropdown({ filtersBarRef }) {
+function DepartmentDropdown({ filtersBarRef, setSelectedDepartments, selectedDepartments }) {
   const { toggleDropdown } = useDropdown();
   const dropdownRef = useRef(null);
   const { data: departments, error, loading } = useFetchGet('departments');
 
-
-  const [selectedDepartments, setSelectedDepartments] = useState([]);
   const [tempSelectedDepartments, setTempSelectedDepartments] = useState([]); 
+  
 
   const handleCheckboxChange = (event) => {
     const { checked, value } = event.target;
@@ -22,6 +21,12 @@ function DepartmentDropdown({ filtersBarRef }) {
       }
     });
   };
+
+  const removeDepartment = (departmentId) => {
+    const updatedDepartments = tempSelectedDepartments.filter(id => id !== departmentId.toString());
+    setTempSelectedDepartments(updatedDepartments);
+    setSelectedDepartments(updatedDepartments); 
+  }
 
   const handleSubmit = () => {
     setSelectedDepartments(tempSelectedDepartments);
@@ -44,7 +49,7 @@ function DepartmentDropdown({ filtersBarRef }) {
   }, [toggleDropdown, filtersBarRef]);
 
   return (
-    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[274px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
+    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[274px] bg-white border border-[#8338EC] z-50 rounded-md px-[30px] flex flex-col">
       <div className="flex-grow overflow-y-auto pr-[5px] mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
         {loading ? (
           <div className="m-auto">Loading departments...</div>
@@ -110,7 +115,7 @@ function DepartmentDropdown({ filtersBarRef }) {
           არჩევა
         </button>
       </div>
-    </div>
+    </div> 
   );
 }
 
