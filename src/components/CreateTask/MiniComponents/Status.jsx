@@ -23,10 +23,17 @@ export default function Status({ isStatusSelected }) {
     const savedStatus = localStorage.getItem('selectedStatus');
     if (savedStatus) {
       setSelectedStatus(savedStatus);
+      if (statuses && statuses.length > 0) {
+        const status = statuses.find(s => s.name === savedStatus);
+        if (status) {
+          isStatusSelected(true, status.id);
+        }
+      }
     } else if (statuses && statuses.length > 0) {
       const defaultStatus = statuses.find(s => s.id === 1);
       if (defaultStatus) {
         setSelectedStatus(defaultStatus.name);
+        isStatusSelected(true, defaultStatus.id);
       }
     }
   }, [statuses]);

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import closeButton from '../images/close-button.png';
 import ButtonsEmployees from './ButtonsEmployees';
 import Forms from './Forms';
@@ -6,24 +6,44 @@ import FileUpload from './FileUpload';
 import EmployeeDepartment from './EmployeeDepartment';
 import useFetchPost from '../../hooks/useFetchPost';
 
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
+
 function Modal({ isOpen, onClose }) {
+
+  
   const [formState, setFormState] = useState({
     name: '',
     surname: '',
-    avatar: '', 
-    department_id: '', 
+    avatar: '',
+    department_id: '',
   });
   const [validationState, setValidationState] = useState({
     name: null,
     surname: null,
-    department_id: null, 
+    department_id: null,
   });
   const [fileError, setFileError] = useState('');
   const [isFileValid, setIsFileValid] = useState(false);
   const [isDepartmentSelected, setIsDepartmentSelected] = useState(false);
 
-  const { postData, loading, error, data } = useFetchPost('employees', formState); 
+  const { postData, loading, error, data } = useFetchPost('employees', formState);
   const modalRef = useRef(null);
+
+  const validateField = (name, value) => {
+    const isValid = value.length >= 2 && value.length <= 255;
+    setValidationState((prev) => ({ ...prev, [name]: isValid }));
+  };
+
+  const debouncedValidateField = useCallback(
+    debounce((name, value) => validateField(name, value), 500),
+    [validateField]
+  );
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -41,19 +61,14 @@ function Modal({ isOpen, onClose }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-  const validateField = (name, value) => {
-    const isValid = value.length >= 2 && value.length <= 255;
-    setValidationState((prev) => ({ ...prev, [name]: isValid }));
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
-    validateField(name, value);
+    debouncedValidateField(name, value);
   };
 
   const validateFileSize = (file) => {
@@ -89,50 +104,49 @@ function Modal({ isOpen, onClose }) {
     setIsDepartmentSelected(isSelected);
     setFormState((prev) => ({
       ...prev,
-      department_id: department_id, 
+      department_id: department_id,
     }));
     setValidationState((prev) => ({ ...prev, department_id: isSelected }));
   };
 
   const isFormValid =
     Object.values(validationState).every(Boolean) && isFileValid && isDepartmentSelected;
-    console.log(isFormValid);
+  console.log(isFormValid);
 
-    const handleFileChange = (file) => {
-      setFormState((prev) => ({
-        ...prev,
-        avatar: file,
-      }));
-    };
+  const handleFileChange = (file) => {
+    setFormState((prev) => ({
+      ...prev,
+      avatar: file,
+    }));
+  };
 
-    const handleAddEmployee = () => {
-      if (isFormValid) {
-        const formData = new FormData();
-        formData.append('name', formState.name);
-        formData.append('surname', formState.surname);
-        formData.append('department_id', formState.department_id);
-        
-        console.log(formState.department_id)
-        
-        if (formState.avatar) {
-          formData.append('avatar', formState.avatar);
-        }
-        
-        console.log(formData)
-        
-        postData(formData); 
+  const handleAddEmployee = () => {
+    if (isFormValid) {
+      const formData = new FormData();
+      formData.append('name', formState.name);
+      formData.append('surname', formState.surname);
+      formData.append('department_id', formState.department_id);
+
+      console.log(formState.department_id);
+
+      if (formState.avatar) {
+        formData.append('avatar', formState.avatar);
       }
-    };
-    
+
+      console.log(formData);
+
+      postData(formData);
+    }
+  };
 
   return (
     <div
-      className="fixed inset-0 bg-[#0D0F1026] bg-opacity-15 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-[#0D0F1026] bg-opacity-15 flex justify-center items-center z-[100]"
       style={{ backdropFilter: 'blur(10px)' }}
     >
       <div
         ref={modalRef}
-        className="bg-white rounded-[10px] w-[913px] h-[768px] relative px-[50px] pt-[40px] pb-[60px] gap-[37px]"
+        className="bg-white rounded-[10px] w-[913px] h-[768px] relative px-[50px] pt-[40px] pb-[60px] gap-[37px] z-[100]"
       >
         <img
           src={closeButton}
@@ -151,21 +165,21 @@ function Modal({ isOpen, onClose }) {
                 validationState={validationState}
                 onInputChange={handleChange}
               />
-              <FileUpload validateFileSize={validateFileSize}  onFileChange={handleFileChange}/>
+              <FileUpload validateFileSize={validateFileSize} onFileChange={handleFileChange} />
             </div>
             <ButtonsEmployees
               disabled={!isFormValid}
               onClose={handleClose}
-              onAddEmployee={handleAddEmployee} 
+              onAddEmployee={handleAddEmployee}
             />
           </div>
           <div className="absolute left-0 bottom-[50px]">
-            <EmployeeDepartment isDepartmentSelected={handleDepartments}/>
+            <EmployeeDepartment isDepartmentSelected={handleDepartments} />
           </div>
         </div>
         {loading && <div className="loading">Loading...</div>}
         {error && <div className="error">{`Error: ${error}`}</div>}
-        {data && <div className="success">Employee added successfully!</div>}
+        {data && <div className="success"></div>}
       </div>
     </div>
   );

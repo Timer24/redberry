@@ -10,7 +10,7 @@ function AddTaskButton({ disabled, onTaskCreation}) {
           cursor: disabled ? 'not-allowed' : 'pointer',
           opacity: disabled ? 0.5 : 1,
         }}
-        onClick={{onTaskCreation}}
+        onClick={onTaskCreation}
       >
         დავალების შექმნა
       </button>

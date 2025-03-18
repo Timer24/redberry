@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AddTaskButton from './MiniComponents/AddTaskButton';
 import Deadline from './MiniComponents/Deadline';
 import Department from './MiniComponents/Department';
@@ -9,67 +9,94 @@ import Priority from './MiniComponents/Priority';
 import Status from './MiniComponents/Status';
 
 function TaskCreator(isModalOpen, onClose) {
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [isPrioritySelected, setIsPrioritySelected] = useState(false);
     const [isStatusSelected, setIsStatusSelected] = useState(false);
     const [isDepartmentSelected, setIsDepartmentSelected] = useState(false);
     const [isEmployeeSelected, setIsEmployeeSelected] = useState(false);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
-    const [isDescriptionLengthValid, setIsDescriptionLengthValid] = useState(null);
-    const [isDescriptionWordsValid, setIsDescriptionWordsValid] = useState(null);
+    const [isDescriptionLengthValid, setIsDescriptionLengthValid] = useState(() => {
+        const savedValidation = localStorage.getItem('descriptionValidation');
+        return savedValidation ? JSON.parse(savedValidation).lengthValid : null;
+    });
+    const [isDescriptionWordsValid, setIsDescriptionWordsValid] = useState(() => {
+        const savedValidation = localStorage.getItem('descriptionValidation');
+        return savedValidation ? JSON.parse(savedValidation).wordsValid : null;
+    });
 
-    useEffect(() => {
+    const [formState, setFormState] = useState(() => {
         const savedFormState = localStorage.getItem('taskFormState');
-        if (savedFormState) {
-          setFormState(JSON.parse(savedFormState));
-        }
-      }, []);
-
-    const [formState, setFormState] = useState({
-        name: '',
-        description: '',
-        due_date: '',
-        priority_id: null, 
-        status_id: null, 
-        employee_id: null, 
+        return savedFormState ? JSON.parse(savedFormState) : {
+            name: '',
+            description: '',
+            due_date: '',
+            priority_id: null, 
+            status_id: null, 
+            employee_id: null, 
+        };
     });
 
-    const [validationState, setValidationState] = useState({
-        name: null,
-        description: null, 
-        priority: null,
-        status_id: null,
-        employee_id: null,
-        due_date: null,
+    const [validationState, setValidationState] = useState(() => {
+        const savedValidationState = localStorage.getItem('taskValidationState');
+        return savedValidationState ? JSON.parse(savedValidationState) : {
+            name: null,
+            description: null, 
+            priority: null,
+            status_id: null,
+            employee_id: null,
+            due_date: null,
+        };
     });
-
-    useEffect(() => {
-        const savedFormState = JSON.parse(localStorage.getItem('taskFormState'));
-        if (savedFormState) {
-            setFormState(savedFormState);
-        }
-    }, []);
 
     useEffect(() => {
         localStorage.setItem('taskFormState', JSON.stringify(formState));
-    }, [formState]);
+        localStorage.setItem('taskValidationState', JSON.stringify(validationState));
+        localStorage.setItem('descriptionValidation', JSON.stringify({
+            lengthValid: isDescriptionLengthValid,
+            wordsValid: isDescriptionWordsValid
+        }));
+    }, [formState, validationState, isDescriptionLengthValid, isDescriptionWordsValid]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormState((prev) => ({ ...prev, [name]: value }));
-
-        if (name === "description") {
-            validateDescription(value);  
-        } else {
-            validateField(name, value);  
-        }
+    const resetForm = () => {
+        setFormState({
+            name: '',
+            description: '',
+            due_date: '',
+            priority_id: null, 
+            status_id: null, 
+            employee_id: null, 
+        });
+        setValidationState({
+            name: null,
+            description: null, 
+            priority: null,
+            status_id: null,
+            employee_id: null,
+            due_date: null,
+        });
+        setIsDescriptionLengthValid(null);
+        setIsDescriptionWordsValid(null);
+        setIsPrioritySelected(false);
+        setIsStatusSelected(false);
+        setIsDepartmentSelected(false);
+        setIsEmployeeSelected(false);
+        setSelectedDepartment(null);
     };
 
-    const validateField = (name, value) => {
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
+        };
+    };
+
+    const validateField = useCallback((name, value) => {
         const isValid = value.length >= 2 && value.length <= 255;
         setValidationState((prev) => ({ ...prev, [name]: isValid }));
-    };
+    }, []);
 
-    const validateDescription = (value) => {
+    const validateDescription = useCallback((value) => {
         const isValidLength = value.length >= 0 && value.length <= 255;  
         const wordCount = value.trim().split(/\s+/).length;  
         const isValidWords = wordCount >= 4;  
@@ -85,6 +112,27 @@ function TaskCreator(isModalOpen, onClose) {
         }));
 
         return isValid;
+    }, []);
+
+    const debouncedValidateField = useCallback(
+        debounce((name, value) => validateField(name, value), 500),
+        [validateField]
+    );
+
+    const debouncedValidateDescription = useCallback(
+        debounce((value) => validateDescription(value), 500),
+        [validateDescription]
+    );
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormState((prev) => ({ ...prev, [name]: value }));
+
+        if (name === "description") {
+            debouncedValidateDescription(value);  
+        } else {
+            debouncedValidateField(name, value);  
+        }
     };
 
     const handlePriorities = (isSelected, priority_id) => {
@@ -132,19 +180,22 @@ function TaskCreator(isModalOpen, onClose) {
     };
 
     const handleTaskCreation = async () => {
+        
+        
         const allFieldsValid = Object.values(validationState).every(
             (field) => field === true || field === null 
         );
         
         if (!allFieldsValid) {
+            console.log('Validation failed for fields:', Object.entries(validationState).filter(([_, value]) => value === false));
             alert("Please fill all the required fields correctly.");
             return;
         }
 
         if (isFormValid()) {
-
             if (!formState.name || !formState.description || !formState.due_date || 
                 formState.priority_id === null || formState.status_id === null|| !formState.employee_id) {
+                
                 alert("Please fill in all required fields.");
                 return;
             }
@@ -157,6 +208,7 @@ function TaskCreator(isModalOpen, onClose) {
                 employee_id: formState.employee_id,
                 priority_id: formState.priority_id,
             };
+           
 
             const response = await fetch("https://momentum.redberryinternship.ge/api/tasks", {
                 method: "POST",
@@ -169,13 +221,31 @@ function TaskCreator(isModalOpen, onClose) {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("Task created successfully:", result);
+                
                 localStorage.removeItem('taskFormState');
+                localStorage.removeItem('taskValidationState');
+                localStorage.removeItem('descriptionValidation');
+                localStorage.removeItem('selectedEmployee');
+                localStorage.removeItem('hasDepartmentBeenSelected');
+                localStorage.removeItem('selectedDepartment');
+                localStorage.removeItem('selectedPriority');
+                localStorage.removeItem('selectedStatus');
+                localStorage.removeItem('selectedDate');
+                
+                resetForm();
+                
+                setShowSuccessPopup(true);
+                setTimeout(() => setShowSuccessPopup(false), 3000);
             } else {
                 console.error("Failed to create task");
                 alert("Failed to create task. Please try again.");
             }
-            }
+        } else {
+            console.log('Form validation failed:', {
+                isFormFilled: formState.name && formState.description && formState.due_date,
+                validationState: Object.entries(validationState).filter(([_, value]) => value === false)
+            });
+        }
     };
 
     const isFormValid = () => {
@@ -187,6 +257,11 @@ function TaskCreator(isModalOpen, onClose) {
 
     return (
         <div className="w-[1684px] h-[958px] mt-[25px] ml-[118px] rounded-[4px] border-[0.3px] border-[#DDD2FF] bg-[#FBF9FFA6] relative">
+            {showSuccessPopup && (
+                <div className="fixed top-4 right-4 text-[#8338EC] bg-white border-[1px] px-6 py-3 rounded-md shadow-lg z-50">
+                    Task Created Successfully!
+                </div>
+            )}
             <div className="w-[550px] h-[674px] top-[65px] left-[55px] flex flex-col gap-[55px] absolute">
                 <div className="relative">
                     <Title formState={formState} validationState={validationState} onInputChange={handleChange}/>

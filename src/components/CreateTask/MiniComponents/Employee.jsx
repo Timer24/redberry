@@ -7,14 +7,27 @@ import Modal from '../../../components/ModalComponent/Modal'
 function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const { data: employees, error, loading } = useFetchGet('employees');
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(() => {
+    const savedEmployee = localStorage.getItem('selectedEmployee');
+    return savedEmployee ? JSON.parse(savedEmployee) : null;
+  });
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasDepartmentBeenSelected, setHasDepartmentBeenSelected] = useState(() => {
+    return localStorage.getItem('hasDepartmentBeenSelected') === 'true';
+  });
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setSelectedEmployee(null);
-    isEmployeeSelected(false, null);
+    if (selectedDepartment) {
+      setHasDepartmentBeenSelected(true);
+      localStorage.setItem('hasDepartmentBeenSelected', 'true');
+    }
+    if (selectedDepartment && selectedEmployee && selectedEmployee.department_id !== selectedDepartment) {
+      setSelectedEmployee(null);
+      isEmployeeSelected(false, null);
+      localStorage.removeItem('selectedEmployee');
+    }
   }, [selectedDepartment]);
 
   const handleOpenModal = () => {
@@ -38,9 +51,16 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleSelect = (employee_id, employee_name, avatar) => {
-    setSelectedEmployee({ id: employee_id, name: employee_name, avatar });
+    const employee = { 
+      id: employee_id, 
+      name: employee_name, 
+      avatar,
+      department_id: selectedDepartment 
+    };
+    setSelectedEmployee(employee);
     setIsOpen(false);
     isEmployeeSelected(true, employee_id);
+    localStorage.setItem('selectedEmployee', JSON.stringify(employee));
   };
 
   useEffect(() => {
@@ -53,19 +73,17 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  
-
   return (
     <div className="mb-[75px] w-[550px] h-auto relative" ref={dropdownRef}>
-      <p className={`font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%] mb-1 ${selectedDepartment ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`}>პასუხისმგებელი თანამშრომელი*</p>
+      <p className={`font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%] mb-1 ${hasDepartmentBeenSelected ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`}>პასუხისმგებელი თანამშრომელი*</p>
       <div
-        className={`w-[550px] h-[45px] border p-[10px] flex items-center justify-between relative ${selectedDepartment ? (isOpen ? 'bg-white cursor-pointer border-[#8338EC] rounded-t-[6px] border-b-0' : 'bg-white cursor-pointer border-[#CED4DA] rounded-[6px]') : 'bg-white cursor-not-allowed border-[#DEE2E6] rounded-[6px]'}`}
-        onClick={() => selectedDepartment && toggleDropdown()}
+        className={`w-[550px] h-[45px] border p-[10px] flex items-center justify-between relative ${hasDepartmentBeenSelected ? (isOpen ? 'bg-white cursor-pointer border-[#8338EC] rounded-t-[6px] border-b-0' : 'bg-white cursor-pointer border-[#CED4DA] rounded-[6px]') : 'bg-white cursor-not-allowed border-[#DEE2E6] rounded-[6px]'}`}
+        onClick={() => hasDepartmentBeenSelected && toggleDropdown()}
       >
         <span className="font-[FiraGO] text-[14px] font-light leading-[100%] tracking-[0%] flex items-center">
-          {selectedDepartment ? (selectedEmployee ? (<><img src={selectedEmployee.avatar} alt={selectedEmployee.name} className="w-[28px] h-[28px] rounded-full mr-[8px] object-cover" />{selectedEmployee.name}</>) : 'აირჩიეთ თანამშრომელი') : ''}
+          {hasDepartmentBeenSelected ? (selectedEmployee ? (<><img src={selectedEmployee.avatar} alt={selectedEmployee.name} className="w-[28px] h-[28px] rounded-full mr-[8px] object-cover" />{selectedEmployee.name}</>) : 'აირჩიეთ თანამშრომელი') : ''}
         </span>
-        <IoIosArrowDown className={`transition-transform ${isOpen ? 'rotate-180' : ''} ${selectedDepartment ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`} />
+        <IoIosArrowDown className={`transition-transform ${isOpen ? 'rotate-180' : ''} ${hasDepartmentBeenSelected ? 'text-[#343A40]' : 'text-[#ADB5BD]'}`} />
       </div>
       <Modal isOpen = {isModalOpen} onClose = {handleCloseModal}/>
       {isOpen && (
@@ -89,8 +107,6 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
             !loading && <p className="p-2 text-gray-500 text-center">No employees available</p>
           )}
         </div>
-
-          
       )}
     </div>
   );

@@ -26,7 +26,7 @@ export default function Priority({ isPrioritySelected }) {
       setSelectedPriority(parsedPriority);
       isPrioritySelected(true, parsedPriority.id);
     } else if (priorities && priorities.length > 0) {
-      const defaultPriority = priorities.find(s => s.id === 1);
+      const defaultPriority = priorities.find(s => s.id === 2);
       if (defaultPriority) {
         setSelectedPriority(defaultPriority);
       }

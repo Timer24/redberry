@@ -14,21 +14,33 @@ const CustomDatePicker = ({ onDateSelect }) => {
   useEffect(() => {
     const storedDate = localStorage.getItem("selectedDate");
     if (storedDate) {
-      setSelectedDate(new Date(storedDate));
-      setTempDate(new Date(storedDate));
+      const date = new Date(storedDate);
+      setSelectedDate(date);
+      setTempDate(date);
+    } else {
+      // Set tomorrow as default date
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      setSelectedDate(tomorrow);
+      setTempDate(tomorrow);
+      localStorage.setItem("selectedDate", tomorrow.toISOString());
+      onDateSelect(formatDate(tomorrow));
     }
   }, []);
 
   const handleDateChange = (date) => {
     setTempDate(date);
+    setSelectedDate(date);
     const formattedDate = formatDate(date);
     onDateSelect(formattedDate);
+    localStorage.setItem("selectedDate", date.toISOString());
+    setIsOpen(false);
   };
 
   const handleConfirm = () => {
     if (tempDate) {
-      const formattedDate = formatDate(tempDate);
       setSelectedDate(tempDate);
+      const formattedDate = formatDate(tempDate);
       onDateSelect(formattedDate);
       localStorage.setItem("selectedDate", tempDate.toISOString());
     }
@@ -37,6 +49,10 @@ const CustomDatePicker = ({ onDateSelect }) => {
 
   const handleCancel = () => {
     setTempDate(selectedDate);
+    setIsOpen(false);
+  };
+
+  const handleClickOutside = () => {
     setIsOpen(false);
   };
 
@@ -56,12 +72,14 @@ const CustomDatePicker = ({ onDateSelect }) => {
       <div className="relative">
         <DatePicker
           showPopperArrow={false}
-          selected={tempDate || selectedDate}
+          selected={selectedDate}
           onChange={handleDateChange}
           minDate={new Date()}
           dateFormat="dd/MM/yyyy"
           placeholderText={selectedDate ? formatDate(selectedDate) : "DD/MM/YYYY"}
           onCalendarOpen={() => setIsOpen(true)}
+          open={isOpen}
+          onClickOutside={handleClickOutside}
           popperProps={{
             strategy: "absolute",
             placement: "bottom-start",
