@@ -22,12 +22,6 @@ function DepartmentDropdown({ filtersBarRef, setSelectedDepartments, selectedDep
     });
   };
 
-  const removeDepartment = (departmentId) => {
-    const updatedDepartments = tempSelectedDepartments.filter(id => id !== departmentId.toString());
-    setTempSelectedDepartments(updatedDepartments);
-    setSelectedDepartments(updatedDepartments); 
-  }
-
   const handleSubmit = () => {
     setSelectedDepartments(tempSelectedDepartments);
     toggleDropdown("department"); 

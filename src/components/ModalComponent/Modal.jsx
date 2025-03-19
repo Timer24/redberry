@@ -15,8 +15,6 @@ const debounce = (func, delay) => {
 };
 
 function Modal({ isOpen, onClose }) {
-
-  
   const [formState, setFormState] = useState({
     name: '',
     surname: '',
@@ -35,10 +33,10 @@ function Modal({ isOpen, onClose }) {
   const { postData, loading, error, data } = useFetchPost('employees', formState);
   const modalRef = useRef(null);
 
-  const validateField = (name, value) => {
+  const validateField = useCallback((name, value) => {
     const isValid = value.length >= 2 && value.length <= 255;
     setValidationState((prev) => ({ ...prev, [name]: isValid }));
-  };
+  }, []);
 
   const debouncedValidateField = useCallback(
     debounce((name, value) => validateField(name, value), 500),
@@ -54,24 +52,18 @@ function Modal({ isOpen, onClose }) {
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
     debouncedValidateField(name, value);
-  };
+  }, [debouncedValidateField]);
 
-  const validateFileSize = (file) => {
+  const validateFileSize = useCallback((file) => {
     const MAX_SIZE = 600 * 1024;
     if (file && file.size > MAX_SIZE) {
       setFileError('ატვირთული ფოტო არ უნდა აღემატებოდეს 600KB-ს.');
@@ -80,9 +72,9 @@ function Modal({ isOpen, onClose }) {
     setFileError('');
     setIsFileValid(true);
     return true;
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setFormState({
       name: '',
       surname: '',
@@ -98,46 +90,44 @@ function Modal({ isOpen, onClose }) {
     setIsFileValid(false);
     setIsDepartmentSelected(false);
     onClose();
-  };
+  }, [onClose]);
 
-  const handleDepartments = (isSelected, department_id) => {
+  const handleDepartments = useCallback((isSelected, department_id) => {
     setIsDepartmentSelected(isSelected);
     setFormState((prev) => ({
       ...prev,
       department_id: department_id,
     }));
     setValidationState((prev) => ({ ...prev, department_id: isSelected }));
-  };
+  }, []);
 
-  const isFormValid =
-    Object.values(validationState).every(Boolean) && isFileValid && isDepartmentSelected;
-  console.log(isFormValid);
-
-  const handleFileChange = (file) => {
+  const handleFileChange = useCallback((file) => {
     setFormState((prev) => ({
       ...prev,
       avatar: file,
     }));
-  };
+  }, []);
 
-  const handleAddEmployee = () => {
-    if (isFormValid) {
-      const formData = new FormData();
-      formData.append('name', formState.name);
-      formData.append('surname', formState.surname);
-      formData.append('department_id', formState.department_id);
+  const isFormValid = Object.values(validationState).every(Boolean) && 
+                     isFileValid && 
+                     isDepartmentSelected;
 
-      console.log(formState.department_id);
+  const handleAddEmployee = useCallback(() => {
+    if (!isFormValid) return;
 
-      if (formState.avatar) {
-        formData.append('avatar', formState.avatar);
-      }
+    const formData = new FormData();
+    formData.append('name', formState.name);
+    formData.append('surname', formState.surname);
+    formData.append('department_id', formState.department_id);
 
-      console.log(formData);
-
-      postData(formData);
+    if (formState.avatar) {
+      formData.append('avatar', formState.avatar);
     }
-  };
+
+    postData(formData);
+  }, [formState, isFormValid, postData]);
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -165,7 +155,10 @@ function Modal({ isOpen, onClose }) {
                 validationState={validationState}
                 onInputChange={handleChange}
               />
-              <FileUpload validateFileSize={validateFileSize} onFileChange={handleFileChange} />
+              <FileUpload 
+                validateFileSize={validateFileSize} 
+                onFileChange={handleFileChange} 
+              />
             </div>
             <ButtonsEmployees
               disabled={!isFormValid}

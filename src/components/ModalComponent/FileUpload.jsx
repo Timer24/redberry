@@ -3,24 +3,24 @@ import UploadImage from "../images/image-upload.png";
 import RecycleBin from "../images/recycle-bin.png";
 
 function FileUpload({ validateFileSize, onFileChange }) {
-    const [image, setImage] = useState(null);
-    const [file, setFile] = useState(null);
+  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file && validateFileSize(file)) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setImage(URL.createObjectURL(file));
-            setFile(file); 
-            onFileChange(file); 
-          };
-          reader.readAsDataURL(file);
-        }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && validateFileSize(file)) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(URL.createObjectURL(file));
+        setFile(file);
+        onFileChange(file);
       };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleDelete = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setImage(null);
     setFile(null);
     onFileChange(null);

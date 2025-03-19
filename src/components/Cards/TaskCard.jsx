@@ -49,37 +49,7 @@ const getShortDepartmentName = (id, name) => {
 
 function TaskCard({ task }) {
   const navigate = useNavigate();
-  const [commentCount, setCommentCount] = useState(0);
   
-  useEffect(() => {
-    const fetchCommentCount = async () => {
-      try {
-        const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}/comments`, {
-          headers: {
-            'Authorization': `Bearer ${BEARER_TOKEN}`,
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch comments');
-        }
-
-        const comments = await response.json();
-        const total = comments.reduce((acc, comment) => {
-          return acc + 1 + (comment.sub_comments?.length || 0);
-        }, 0);
-        
-        setCommentCount(total);
-      } catch (err) {
-        console.error('Error fetching comments:', err);
-      }
-    };
-
-    if (task.id) {
-      fetchCommentCount();
-    }
-  }, [task.id]);
-
   const {
     attributes,
     listeners,
@@ -162,7 +132,7 @@ function TaskCard({ task }) {
         </div>
         <div className="flex items-center gap-1">
           <GoComment className="text-[#9B9B9B]"/>
-          <span className="font-[FiraGO] text-sm text-[#9B9B9B]">{commentCount}</span>
+          <span className="font-[FiraGO] text-sm text-[#9B9B9B]">{task.total_comments}</span>
         </div>
       </div>
     </div>

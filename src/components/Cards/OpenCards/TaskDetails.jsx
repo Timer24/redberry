@@ -8,7 +8,7 @@ import { FiCalendar } from "react-icons/fi";
 
 const BEARER_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
-function TaskDetails({id}) {
+function TaskDetails({task}) {
     function formatDate(dateString) {
         const date = new Date(dateString);
         
@@ -22,47 +22,12 @@ function TaskDetails({id}) {
         return `${weekday} - ${month}/${day}/${year}`;
     }
     
-    console.log({id})
-    const [task, setTask] = useState(null);
+    const [updatedTask, setUpdatedTask] = useState(task);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [statuses, setStatuses] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
-
-    
-    useEffect(() => {
-        const fetchTaskData = async () => {
-          try {
-            const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${id}`, {
-                headers: {
-                    'Content-Type':'application/json',
-                    'Authorization': `Bearer ${BEARER_TOKEN}`,
-                }
-            });
-      
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API response error:', response.status, errorText);
-                throw new Error(`Failed to fetch task data: ${response.status}`);
-            }
-      
-            const taskData = await response.json();
-            console.log("Task data:", taskData);
-              
-            setTask(taskData);
-            setLoading(false);
-          } catch (err) {
-              console.error('Error fetching task data:', err);
-              setError(err.message);
-              setLoading(false);
-          }
-        };
-    
-        if (id) {
-            fetchTaskData();
-        }
-    }, [id]);
 
     
     useEffect(() => {
@@ -106,54 +71,34 @@ function TaskDetails({id}) {
 
     
     const handleStatusChange = async (newStatus) => {
+        try {
+            const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${BEARER_TOKEN}`,
+                },
+                body: JSON.stringify({
+                    status_id: newStatus.id
+                }),
+            });
 
-        console.log("Selected Status:", newStatus);
-        console.log("Selected Status ID:", newStatus.id);
-        
-        setTask(prevTask => ({
-            ...prevTask,
-            status: newStatus
-        }));
-        setIsDropdownOpen(false);
-
-            try {
-                const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${BEARER_TOKEN}`,
-                    },
-                    body: JSON.stringify({
-                        status_id: newStatus.id
-                    }),
-                });
-        
-                if (!response.ok) {
-                    throw new Error('Failed to update task status');
-                }
-        
-                
-                setTask((prevTask) => ({
-                    ...prevTask,
-                    status: newStatus,
-                }));
-        
-            } catch (err) {
-                console.error('Error updating task status:', err);
-            } finally {
-                setIsDropdownOpen(false);
+            if (!response.ok) {
+                throw new Error('Failed to update task status');
             }
-        };
+
+            setUpdatedTask(prevTask => ({
+                ...prevTask,
+                status: newStatus
+            }));
+            
+        } catch (err) {
+            console.error('Error updating task status:', err);
+        } finally {
+            setIsDropdownOpen(false);
+        }
+    };
         
-        
-      
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
-      
-    if (error) {
-        return <div className="text-red-500 flex justify-center items-center h-screen">Error: {error}</div>;
-    }
       
     if (!task) {
         return <div className="flex justify-center items-center h-screen">Task not found</div>;
@@ -181,7 +126,7 @@ function TaskDetails({id}) {
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             >
                                 <span className="text-[14px] font-[FiraGO] text-[#0D0F10]">
-                                {task.status.name}
+                                    {updatedTask?.status?.name || task.status.name}
                                 </span>
                                 <FiChevronDown
                                 className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
@@ -190,8 +135,6 @@ function TaskDetails({id}) {
 
                             {isDropdownOpen && (
                                 <div className="absolute left-0 top-full w-full bg-white border border-[#CED4DA] border-t-0 rounded-b-[6px] max-h-[200px] overflow-y-auto z-10 shadow-md">
-                                {loading && <p className="p-2 text-gray-500 text-center">Loading...</p>}
-                                {error && <p className="p-2 text-red-500 text-center">Error: {error}</p>}
                                 {statuses && statuses.length > 0 ? (
                                     statuses.map((status) => (
                                     <div

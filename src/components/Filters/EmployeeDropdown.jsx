@@ -34,11 +34,6 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
     toggleDropdown("employee");
   };
 
-  const removeEmployee = () => {
-    setSelectedEmployee(null);
-  };
-
-  
 
   return (
     <div ref={dropdownRef} className="absolute top-[55px] w-[688px] z-50  h-[298px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">

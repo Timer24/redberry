@@ -7,14 +7,12 @@ function EmployeeDepartment({ isDepartmentSelected }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('');
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
-  function handleSelect(department_id, department_name) {
+  const handleSelect = (department_id, department_name) => {
     setSelectedDepartment(department_name);
     setIsOpen(false);
-    isDepartmentSelected(true, department_id);  
+    isDepartmentSelected(true, department_id);
   };
 
   return (
@@ -33,8 +31,6 @@ function EmployeeDepartment({ isDepartmentSelected }) {
         </span>
         <IoIosArrowDown className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </div>
-
-      
 
       {isOpen && (
         <div className="absolute left-0 top-full w-[384px] bg-white border border-[#CED4DA] border-t-0 max-h-[200px] overflow-y-auto z-10 rounded-b-[6px] shadow-md">

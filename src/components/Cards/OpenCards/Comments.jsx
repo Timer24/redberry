@@ -89,7 +89,7 @@ function Comment({ comment, onReply, activeReplyId, onSubmitReply }) {
   );
 }
 
-function Comments({ id }) {
+function Comments({ task }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
@@ -98,14 +98,15 @@ function Comments({ id }) {
   const [totalComments, setTotalComments] = useState(0);
 
   useEffect(() => {
-    if (id) {
+    if (task?.id) {
       fetchComments();
+      setTotalComments(task.total_comments);
     }
-  }, [id]);
+  }, [task?.id]);
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${id}/comments`, {
+      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}/comments`, {
         headers: {
           'Authorization': `Bearer ${BEARER_TOKEN}`,
         }
@@ -119,7 +120,7 @@ function Comments({ id }) {
       
       const sortedComments = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       setComments(sortedComments);
-      
+
       const total = sortedComments.reduce((acc, comment) => {
         return acc + 1 + (comment.sub_comments?.length || 0);
       }, 0);
@@ -133,10 +134,10 @@ function Comments({ id }) {
   };
 
   const handleSubmitComment = async () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !task?.id) return;
 
     try {
-      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${id}/comments`, {
+      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,8 +157,8 @@ function Comments({ id }) {
       const newCommentData = await response.json();
       
       setComments(prevComments => [newCommentData, ...prevComments]);
-      setTotalComments(prev => prev + 1);
       setNewComment('');
+      setTotalComments(prev => prev + 1);
     } catch (err) {
       setError(err.message);
     }
@@ -171,7 +172,7 @@ function Comments({ id }) {
     if (!replyText.trim()) return;
 
     try {
-      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${id}/comments`, {
+      const response = await fetch(`https://momentum.redberryinternship.ge/api/tasks/${task.id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,8 +200,8 @@ function Comments({ id }) {
         }
         return comment;
       }));
-      setTotalComments(prev => prev + 1);
       setActiveReplyId(null);
+      setTotalComments(prev => prev + 1);
     } catch (err) {
       setError(err.message);
     }

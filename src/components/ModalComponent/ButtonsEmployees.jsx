@@ -17,7 +17,7 @@ function ButtonsEmployees({ disabled, onClose, onAddEmployee }) {
           cursor: disabled ? 'not-allowed' : 'pointer',
           opacity: disabled ? 0.5 : 1,
         }}
-        onClick={onAddEmployee} // Call the onAddEmployee function when clicked
+        onClick={onAddEmployee}
       >
         დაამატე თანამშრომელი
       </button>
