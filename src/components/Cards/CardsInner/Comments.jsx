@@ -211,10 +211,10 @@ function Comments({ task }) {
     <div className="w-[741px] h-[975px] top-[199px] left-[1059px] rounded-[10px] border-[0.3px] border-[#DDD2FF] bg-[#F8F3FEA6] absolute">
       <div className="relative w-[651px] mt-[40px] ml-[45px] rounded-[10px] border border-[#ADB5BD] bg-white focus-within:ring-1 focus-within:ring-[#8338EC]">
         <textarea
-          placeholder="დაწერე კომენტარი..."
+          placeholder="დაწერე კომენტარი"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="w-full min-h-[100px] px-[20px] pb-[60px] pt-[18px] rounded-t-[10px] focus:outline-none resize-none overflow-y-auto custom-scrollbar"
+          className="w-full min-h-[100px] px-[20px] pb-[60px] pt-[18px] rounded-t-[10px] focus:outline-none resize-none overflow-y-auto custom-scrollbar text-custom-350 text-[14px] font-[FiraGO] leading-[100%] tracking-[0%]"
         />
         <div className="absolute bottom-[5px] w-full h-[40px] flex items-center justify-end bg-white rounded-b-[10px] border-t-0 px-[20px]">
           <button 

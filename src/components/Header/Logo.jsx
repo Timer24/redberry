@@ -1,4 +1,4 @@
-import logo1 from '../images/momentum-logo.png';
+import logo1 from '../assets/momentum-logo.png';
 import React from 'react'
 
 function Logo({onClick}) {

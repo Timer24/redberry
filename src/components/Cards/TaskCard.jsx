@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { GoComment } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
 import { MdDragIndicator } from "react-icons/md";
-import Comments from './OpenCards/Comments';
+import Comments from './CardsInner/Comments';
 
 const BEARER_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
@@ -85,10 +85,10 @@ function TaskCard({ task }) {
       className={`w-[381px] h-[217px] bg-white p-6 rounded-[10px] shadow-sm mb-4 cursor-pointer border ${statusColors[task.status.id]} border-[1px] flex flex-col justify-between relative group`}
       onClick={handleCardClick}
     >
-      <div 
+      <div
         {...attributes} 
         {...listeners}
-        className="absolute top-2 right-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+        className="absolute top-2 right-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
       >
         <MdDragIndicator size={20} />
       </div>

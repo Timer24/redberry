@@ -1,6 +1,12 @@
 import React from 'react';
 import { IoMdCheckmark } from "react-icons/io";
 
+
+const getValidationColor = (isValid) => {
+    if (isValid === null) return 'text-[#6C757D]'; 
+    return isValid ? 'text-[#08A508]' : 'text-[#FA4D4D]';
+};
+
 function Description({ formState, validationState, onInputChange, isValidLength, isValidWords }) {
     return (
         <div className="w-[550px] h-[133px] top-0 left-0">
@@ -26,8 +32,8 @@ function Description({ formState, validationState, onInputChange, isValidLength,
 }
 
 const ValidationWarning = ({ isValidLength, isValidWords }) => {
-    const textColorLength = isValidLength === null ? "text-[#6C757D]" : isValidLength ? "text-[#08A508]" : "text-[#FA4D4D]";
-    const textColorWords = isValidWords === null ? "text-[#6C757D]" : isValidWords ? "text-[#08A508]" : "text-[#FA4D4D]";
+    const textColorLength = getValidationColor(isValidLength);
+    const textColorWords = getValidationColor(isValidWords);
 
     return (
         <div className="w-[127px] h-[34px] absolute top-[155px] flex flex-wrap items-center gap-x-2 gap-y-0">

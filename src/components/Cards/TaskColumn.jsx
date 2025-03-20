@@ -67,10 +67,10 @@ function TaskColumn({ status, tasks, selectedEmployee, selectedPriorities, selec
       <div
         ref={setNodeRef}
         className={`${
-          needsScroll ? 'h-[978px] w-[381px] overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' : 'w-[381px]'
+          needsScroll ? 'h-[922px] w-[381px] overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden' : 'w-[381px]'
         } transition-all ${
           isOver ? 'bg-gray-50 ring-2 ring-blue-400 ring-opacity-50 rounded-lg' : ''
-        }`}
+        } mb-[20px]`}
       >
         <div className="w-[381px]">
           <SortableContext

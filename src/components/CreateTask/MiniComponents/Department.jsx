@@ -1,16 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import useFetchGet from '../../../hooks/useFetchGet';
+import useClickOutside from '../../../hooks/useClickOutside'; 
 
 function EmployeeDepartment({ isDepartmentSelected }) {
   const { data: departments, error, loading } = useFetchGet("departments");
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedDepartment, setSelectedDepartment] = useState(() => {
+    const savedDepartment = localStorage.getItem('selectedDepartment');
+    return savedDepartment ? { name: savedDepartment } : null;
+  });
   const dropdownRef = useRef(null);
   
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    
+    const savedDepartment = localStorage.getItem('selectedDepartment');
+    if (savedDepartment && departments) {
+      const department = departments.find(dept => dept.name === savedDepartment);
+      if (department) {
+        isDepartmentSelected(true, department.id);
+      }
+    }
+  }, [departments]);
 
   const handleSelect = (department_id, department_name) => {
     setSelectedDepartment({ name: department_name });
@@ -19,23 +34,18 @@ function EmployeeDepartment({ isDepartmentSelected }) {
     localStorage.setItem('selectedDepartment', department_name);
   };
 
-  useEffect(() => {
-    const savedDepartment = localStorage.getItem('selectedDepartment');
-    if (savedDepartment) {
-      setSelectedDepartment({ name: savedDepartment });
-    }
-  }, []);
+  useClickOutside(dropdownRef, () => setIsOpen(false));
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
+    const handleReset = (event) => {
+        setSelectedDepartment(null);
+        localStorage.removeItem('selectedDepartment');
+        isDepartmentSelected(false, null);
     };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+    
+    window.addEventListener('resetTaskForm', handleReset);
+    return () => window.removeEventListener('resetTaskForm', handleReset);
+  }, [isDepartmentSelected]);
 
   return (
     <div className="mb-[75px] w-[550px] h-auto relative" ref={dropdownRef}>

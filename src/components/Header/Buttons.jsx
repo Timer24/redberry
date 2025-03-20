@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import Modal from '../ModalComponent/Modal';
+import Modal from '../CreateEmployee/Modal';
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 

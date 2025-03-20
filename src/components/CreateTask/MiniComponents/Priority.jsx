@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import useFetchGet from '../../../hooks/useFetchGet';
+import useClickOutside from '../../../hooks/useClickOutside';
+
 
 export default function Priority({ isPrioritySelected }) {
   const { data: priorities, error, loading } = useFetchGet("priorities");
@@ -34,19 +36,30 @@ export default function Priority({ isPrioritySelected }) {
   }, [priorities]);
   
 
+  useClickOutside(dropdownRef, () => setIsOpen(false));
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
+    const handleReset = (event) => {
+        
+        const defaultPriority = priorities?.find(p => p.id === 2) || { 
+            id: 2, 
+            name: "საშუალო",
+            icon: null 
+        };
+        
+        setSelectedPriority({
+            name: defaultPriority.name,
+            icon: defaultPriority.icon,
+            id: defaultPriority.id
+        });
+        
+        localStorage.removeItem('selectedPriority');
+        isPrioritySelected(true, 2);
     };
-
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
+    
+    window.addEventListener('resetTaskForm', handleReset);
+    return () => window.removeEventListener('resetTaskForm', handleReset);
+  }, [isPrioritySelected, priorities]);
 
   return (
     <div className="mb-[75px] w-[259px] top-[62px] relative" ref={dropdownRef}>

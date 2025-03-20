@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../datepicker.css";
-import CalendarIcon from "../../images/calendar-line.png";
-import ArrowUp from "../../images/Arrow-up.png";
-import ArrowDown from "../../images/Arrow-down.png";
+import CalendarIcon from "../../assets/calendar-line.png";
+import ArrowUp from "../../assets/Arrow-up.png";
+import ArrowDown from "../../assets/Arrow-down.png";
 
 const CustomDatePicker = ({ onDateSelect }) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -18,7 +18,7 @@ const CustomDatePicker = ({ onDateSelect }) => {
       setSelectedDate(date);
       setTempDate(date);
     } else {
-      // Set tomorrow as default date
+      
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       setSelectedDate(tomorrow);
@@ -27,6 +27,23 @@ const CustomDatePicker = ({ onDateSelect }) => {
       onDateSelect(formatDate(tomorrow));
     }
   }, []);
+
+  useEffect(() => {
+    const handleReset = (event) => {
+        
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+      
+        setSelectedDate(tomorrow);
+        setTempDate(tomorrow);
+        localStorage.setItem("selectedDate", tomorrow.toISOString());
+        onDateSelect(formatDate(tomorrow));
+    };
+    
+    window.addEventListener('resetTaskForm', handleReset);
+    return () => window.removeEventListener('resetTaskForm', handleReset);
+  }, [onDateSelect]);
 
   const handleDateChange = (date) => {
     setTempDate(date);

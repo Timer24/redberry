@@ -1,17 +1,11 @@
 import { useParams } from 'react-router-dom';
 import React from 'react';
-import Header1 from '../../Header/Header1';
+import Header1 from '../../Header/HeaderMain';
 import CardDescription from './CardDescription'
 import TaskDetails from './TaskDetails';
 import Comments from './Comments';
 import useFetchGet from '../../../hooks/useFetchGet';
 
-// const statusColors = {
-//   1: 'border-[#FFA41B]', 
-//   2: 'border-[#FF4E4E]', 
-//   3: 'border-[#FF1B8D]', 
-//   4: 'border-[#1BC1FF]'  
-// };
 
 function OpenCard({totalComments}) {
 

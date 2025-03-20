@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import closeButton from '../images/close-button.png';
+import closeButton from '../assets/close-button.png';
 import ButtonsEmployees from './ButtonsEmployees';
 import Forms from './Forms';
 import FileUpload from './FileUpload';
 import EmployeeDepartment from './EmployeeDepartment';
 import useFetchPost from '../../hooks/useFetchPost';
+import SuccessPopup from '../shared/SuccessPopup';
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -29,6 +30,7 @@ function Modal({ isOpen, onClose }) {
   const [fileError, setFileError] = useState('');
   const [isFileValid, setIsFileValid] = useState(false);
   const [isDepartmentSelected, setIsDepartmentSelected] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const { postData, loading, error, data } = useFetchPost('employees', formState);
   const modalRef = useRef(null);
@@ -112,8 +114,11 @@ function Modal({ isOpen, onClose }) {
                      isFileValid && 
                      isDepartmentSelected;
 
-  const handleAddEmployee = useCallback(() => {
-    if (!isFormValid) return;
+  const handleAddEmployee = useCallback(async () => {
+    if (!isFormValid) {
+      console.log('Form is not valid:', { validationState, isFileValid, isDepartmentSelected });
+      return;
+    }
 
     const formData = new FormData();
     formData.append('name', formState.name);
@@ -124,8 +129,24 @@ function Modal({ isOpen, onClose }) {
       formData.append('avatar', formState.avatar);
     }
 
-    postData(formData);
-  }, [formState, isFormValid, postData]);
+    
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+
+    try {
+      const result = await postData(formData);
+      console.log('API Response:', result);
+      
+      setShowSuccessPopup(true);
+      setTimeout(() => {
+        setShowSuccessPopup(false);
+        handleClose();
+      }, 3000);
+    } catch (error) {
+      console.error('Error creating employee:', error);
+    }
+  }, [formState, isFormValid, postData, handleClose]);
 
   if (!isOpen) return null;
 
@@ -138,6 +159,12 @@ function Modal({ isOpen, onClose }) {
         ref={modalRef}
         className="bg-white rounded-[10px] w-[913px] h-[768px] relative px-[50px] pt-[40px] pb-[60px] gap-[37px] z-[100]"
       >
+        {showSuccessPopup && (
+          <div className="absolute top-4 left-4 text-[#8338EC] bg-white border-[1px] px-6 py-3 rounded-md shadow-lg z-[150]">
+            თანამშრომელი წარმატებით დაემატა
+          </div>
+        )}
+
         <img
           src={closeButton}
           className="absolute top-[40px] right-[50px] w-[40px] h-[40px] cursor-pointer"

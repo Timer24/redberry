@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import useFetchGet from '../../hooks/useFetchGet';
+import useClickOutside from '../../hooks/useClickOutside';
 
 function EmployeeDepartment({ isDepartmentSelected }) {
   const { data: departments, error, loading } = useFetchGet("departments");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('');
+  const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  useClickOutside(dropdownRef, () => setIsOpen(false));
+
+  const toggleDropdown = (e) => { 
+    e.stopPropagation(); 
+    setIsOpen((prev) => !prev); 
+  };
 
   const handleSelect = (department_id, department_name) => {
     setSelectedDepartment(department_name);
@@ -16,7 +23,7 @@ function EmployeeDepartment({ isDepartmentSelected }) {
   };
 
   return (
-    <div className="mb-[75px] w-[384px] h-auto relative">
+    <div className="mb-[75px] w-[384px] h-auto relative" ref = {dropdownRef}>
       <p className="font-[FiraGO] text-[14px] font-light leading-[100%] tracking-[0%] mb-1">
         დეპარტამენტი*
       </p>

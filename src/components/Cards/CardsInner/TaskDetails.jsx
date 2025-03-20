@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { FiUser, FiChevronDown } from "react-icons/fi";
 import { TfiCalendar, TfiPieChart } from "react-icons/tfi";
 import { FiCalendar } from "react-icons/fi";
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const BEARER_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
@@ -56,18 +57,7 @@ function TaskDetails({task}) {
     }, []);
 
     
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsDropdownOpen(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [dropdownRef]);
+    useClickOutside(dropdownRef, () => setIsDropdownOpen(false));   
 
     
     const handleStatusChange = async (newStatus) => {

@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import useFetchGet from '../../../hooks/useFetchGet';
-import PlusSign from '../../images/plus-sign.png';
-import Modal from '../../../components/ModalComponent/Modal'
+import useClickOutside from '../../../hooks/useClickOutside';
+import PlusSign from '../../assets/plus-sign.png';
+import Modal from '../../CreateEmployee/Modal'
 
 function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const { data: employees, error, loading } = useFetchGet('employees');
@@ -14,21 +15,45 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasDepartmentBeenSelected, setHasDepartmentBeenSelected] = useState(() => {
-    return localStorage.getItem('hasDepartmentBeenSelected') === 'true';
+    const savedDepartment = localStorage.getItem('selectedDepartment');
+    return savedDepartment ? true : false;
   });
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (selectedDepartment) {
-      setHasDepartmentBeenSelected(true);
-      localStorage.setItem('hasDepartmentBeenSelected', 'true');
+    const savedEmployee = localStorage.getItem('selectedEmployee');
+    if (savedEmployee) {
+      const parsedEmployee = JSON.parse(savedEmployee);
+      setSelectedEmployee(parsedEmployee);
+      isEmployeeSelected(true, parsedEmployee.id);
     }
-    if (selectedDepartment && selectedEmployee && selectedEmployee.department_id !== selectedDepartment) {
-      setSelectedEmployee(null);
-      isEmployeeSelected(false, null);
-      localStorage.removeItem('selectedEmployee');
+  }, []);
+
+  useEffect(() => {
+    if (employees) {
+      if (selectedDepartment) {
+        setHasDepartmentBeenSelected(true);
+        localStorage.setItem('hasDepartmentBeenSelected', 'true');
+        setFilteredEmployees(
+          employees.filter((employee) => employee.department?.id === selectedDepartment)
+        );
+        setSelectedEmployee(null);
+        localStorage.removeItem('selectedEmployee');
+        isEmployeeSelected(false, null);
+      } else {
+        const savedEmployee = localStorage.getItem('selectedEmployee');
+        if (savedEmployee) {
+          const parsedEmployee = JSON.parse(savedEmployee);
+          setFilteredEmployees(
+            employees.filter((employee) => employee.department?.id === parsedEmployee.department_id)
+          );
+          setHasDepartmentBeenSelected(true);
+        } else {
+          setFilteredEmployees([]);
+        }
+      }
     }
-  }, [selectedDepartment]);
+  }, [employees, selectedDepartment]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -37,16 +62,6 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
   const handleCloseModal = () =>{
     setIsModalOpen(false);
   }
-
-  useEffect(() => {
-    if (selectedDepartment && employees) {
-      setFilteredEmployees(
-        employees.filter((employee) => employee.department?.id === selectedDepartment)
-      );
-    } else {
-      setFilteredEmployees([]);
-    }
-  }, [employees, selectedDepartment]);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -63,15 +78,20 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
     localStorage.setItem('selectedEmployee', JSON.stringify(employee));
   };
 
+  useClickOutside(dropdownRef, () => setIsOpen(false));
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
+    const handleReset = (event) => {
+        setSelectedEmployee(null);
+        setHasDepartmentBeenSelected(false);
+        localStorage.removeItem('selectedEmployee');
+        localStorage.setItem('hasDepartmentBeenSelected', 'false');
+        isEmployeeSelected(false, null);
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+    
+    window.addEventListener('resetTaskForm', handleReset);
+    return () => window.removeEventListener('resetTaskForm', handleReset);
+  }, [isEmployeeSelected]);
 
   return (
     <div className="mb-[75px] w-[550px] h-auto relative" ref={dropdownRef}>
@@ -90,9 +110,12 @@ function EmployeeDropdown({ isEmployeeSelected, selectedDepartment}) {
         <div className="absolute left-0 top-full w-[550px] bg-white border border-[#8338EC] border-t-0 h-[278px] overflow-y-auto z-10 rounded-b-[6px] shadow-md">
           {loading && <p className="p-2 text-gray-500 text-center">Loading...</p>}
           {error && <p className="p-2 text-red-500 text-center">Error: {error}</p>}
-          <div className="w-full h-[46px] px-[20px] flex items-center gap-[6px] hover:bg-gray-200 cursor-pointer font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%]">
+          <div 
+            className="w-full h-[46px] px-[20px] flex items-center gap-[6px] hover:bg-gray-200 cursor-pointer font-[FiraGO] text-[16px] font-normal leading-[100%] tracking-[0%]"
+            onClick={handleOpenModal}
+          >
             <img src={PlusSign} className="text-[#8338EC] w-[18px] h-[18px]" alt="+" />
-            <span onClick = {handleOpenModal}  className="text-[#8338EC]">თანამშრომლის დამატება</span>
+            <span className="text-[#8338EC]">თანამშრომლის დამატება</span>
           </div>
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((employee) => (

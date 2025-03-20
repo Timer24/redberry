@@ -58,7 +58,7 @@ function Filters({selectedEmployee, setSelectedEmployee, selectedPriorities, set
           if (employees) {
             const names = {};
             employees.forEach(employee => {
-              names[employee.id] = employee.name;
+              names[employee.id] = `${employee.name} ${employee.surname}`;
             });
             setEmployeeNames(names);
           }
@@ -69,6 +69,9 @@ function Filters({selectedEmployee, setSelectedEmployee, selectedPriorities, set
           setSelectedEmployee(null);
           setSelectedPriorities([]);
           setSelectedDepartments([]);
+          localStorage.removeItem('selectedEmployee');
+          localStorage.removeItem('selectedPriorities');
+          localStorage.removeItem('selectedDepartments');
         }
 
         const filtersBarRef = useRef(null);

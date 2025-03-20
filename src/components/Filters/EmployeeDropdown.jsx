@@ -36,8 +36,8 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
 
 
   return (
-    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] z-50  h-[298px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
-      <div className="flex-grow overflow-y-auto pr-[5px] z-50  mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
+    <div ref={dropdownRef} className="absolute top-[55px] w-[688px] z-50 h-[280px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
+      <div className="flex-grow overflow-y-auto pr-[5px] z-50 mt-[40px] max-h-[180px]">
         {loading ? (
           <div className="m-auto">Loading employees...</div>
         ) : error ? (
@@ -45,8 +45,8 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
         ) : (
           <ul className="flex flex-col space-y-[15px]">
             {employees && employees.length > 0 ? (
-              employees.slice(0, 4).map((employee) => (
-                <li key={employee.id} className="h-[28px] flex items-center p-2 rounded-md">
+              employees.map((employee) => (
+                <li key={employee.id} className="h-[28px] min-h-[28px] flex items-center p-2 rounded-md">
                   <label className="flex items-center cursor-pointer">
                     
                     <input

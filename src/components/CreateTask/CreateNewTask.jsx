@@ -1,5 +1,5 @@
 import React from 'react'
-import Header1 from '../Header/Header1';
+import Header1 from '../Header/HeaderMain';
 import TaskCreator from './TaskCreator';
 
 function CreateNewTask({isModalOpen, onClose}) {

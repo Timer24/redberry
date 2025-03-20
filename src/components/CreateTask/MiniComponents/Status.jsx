@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import useFetchGet from '../../../hooks/useFetchGet';
-
+import useClickOutside from '../../../hooks/useClickOutside';
 export default function Status({ isStatusSelected }) {
   const { data: statuses, error, loading } = useFetchGet("statuses");
   const [isOpen, setIsOpen] = useState(false);
@@ -38,19 +38,19 @@ export default function Status({ isStatusSelected }) {
     }
   }, [statuses]);
 
+  useClickOutside(dropdownRef, () => setIsOpen(false));
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
+    const handleReset = (event) => {
 
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
+        setSelectedStatus("დასაწყები"); 
+        localStorage.removeItem('selectedStatus');
+        isStatusSelected(true, 1);
     };
-  }, []);
+    
+    window.addEventListener('resetTaskForm', handleReset);
+    return () => window.removeEventListener('resetTaskForm', handleReset);
+}, [isStatusSelected]);
 
   return (
     <div className="mb-[75px] w-[259px] top-[62px] relative" ref={dropdownRef}>
