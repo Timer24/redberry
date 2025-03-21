@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { debounce } from '../utils/debounce';
+
 
 const API_TOKEN = '9e6dffc9-8b8c-43d7-bd5a-d84d84a95aa1';
 
@@ -34,37 +34,6 @@ export const useTaskForm = () => {
 
     const [selectedDepartment, setSelectedDepartment] = useState(null);
 
-    useEffect(() => {
-        localStorage.setItem('taskFormState', JSON.stringify(formState));
-    }, [formState]);
-
-    useEffect(() => {
-        
-        if (formState.description) {
-            validateDescription(formState.description);
-        }
-        
-        if (formState.name) {
-            validateField('name', formState.name);
-        }
-
-        if (formState.priority_id) {
-            setValidationState(prev => ({ ...prev, priority_id: true }));
-        }
-        
-        if (formState.status_id) {
-            setValidationState(prev => ({ ...prev, status_id: true }));
-        }
-        
-        if (formState.employee_id) {
-            setValidationState(prev => ({ ...prev, employee_id: true }));
-        }
-
-        if (formState.due_date) {
-            setValidationState(prev => ({ ...prev, due_date: true }));
-        }
-    }, []); 
-
     const validateField = useCallback((name, value) => {
         const isValid = value.length >= 2 && value.length <= 255;
         setValidationState((prev) => ({ ...prev, [name]: isValid }));
@@ -98,6 +67,44 @@ export const useTaskForm = () => {
         return isValid;
     }, []);
 
+    useEffect(() => {
+        localStorage.setItem('taskFormState', JSON.stringify(formState));
+    }, [formState]);
+
+    useEffect(() => {
+        if (formState.description) {
+            validateDescription(formState.description);
+        }
+        
+        if (formState.name) {
+            validateField('name', formState.name);
+        }
+
+        if (formState.priority_id) {
+            setValidationState(prev => ({ ...prev, priority_id: true }));
+        }
+        
+        if (formState.status_id) {
+            setValidationState(prev => ({ ...prev, status_id: true }));
+        }
+        
+        if (formState.employee_id) {
+            setValidationState(prev => ({ ...prev, employee_id: true }));
+        }
+
+        if (formState.due_date) {
+            setValidationState(prev => ({ ...prev, due_date: true }));
+        }
+    }, [formState, validateDescription, validateField]);
+
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func(...args), delay);
+        };
+    };
+
     const debouncedValidateField = useCallback(
         debounce((name, value) => validateField(name, value), 500),
         [validateField]
@@ -113,7 +120,7 @@ export const useTaskForm = () => {
         setFormState(prev => ({ ...prev, [name]: value }));
 
         if (name === "description") {
-            validateDescription(value);
+            debouncedValidateDescription(value);
         } else {
             debouncedValidateField(name, value);
         }

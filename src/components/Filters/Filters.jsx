@@ -93,7 +93,7 @@ function Filters({selectedEmployee, setSelectedEmployee, selectedPriorities, set
         
   return (
     <DropdownContext.Provider value = {{toggleDropdown, departmentOpen, setDepartmentOpen, priorityOpen, setPriorityOpen, employeeOpen, setEmployeeOpen}}>
-    <div ref = {filtersBarRef} className="absolute top-[233px] left-[120px] w-[688px] mb-[40px] h-[44px] rounded-[10px] border-[0.5px] border-[#DEE2E6] flex items-center justify-around z-50">
+    <div ref = {filtersBarRef} className="absolute top-[233px] left-[120px] w-[688px] mb-[40px] h-[44px] rounded-[10px] border-[0.5px] border-[#DEE2E6] flex items-center justify-around z-49">
       <button onClick={() => toggleDropdown("department")}
        className={`font-style-1 relative flex items-center ${departmentOpen ? "text-[#8338EC]": ""}`}>
         დეპარტამენტი

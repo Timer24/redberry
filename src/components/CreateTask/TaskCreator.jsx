@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskForm } from './TaskForm';
 import { AssignmentSection } from './AssignmentSection';
 import AddTaskButton from './MiniComponents/AddTaskButton';
 import { useTaskForm } from '../../hooks/useTaskForm';
 import { SuccessPopup } from './SuccessPopup';
+import HeaderMain from '../Header/HeaderMain';
+import Modal from '../CreateEmployee/Modal';
 
-function TaskCreator({ isModalOpen, onClose }) {
+function TaskCreator() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    
     const {
         formState,
         validationState,
@@ -25,6 +30,24 @@ function TaskCreator({ isModalOpen, onClose }) {
 
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
+    useEffect(() => {
+        if (formState && validationState) {
+            setIsLoading(false);
+        }
+    }, [formState, validationState]);
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     const handleTaskCreation = async () => {
         try {
             await submitTask();
@@ -38,7 +61,10 @@ function TaskCreator({ isModalOpen, onClose }) {
     };
 
     return (
-        <div className="w-[1684px] h-[958px] mt-[25px] ml-[118px] rounded-[4px] border-[0.3px] border-[#DDD2FF] bg-[#FBF9FFA6] relative">
+       <div className="pt-[100px]">
+         <HeaderMain handleOpenModal={handleOpenModal} />
+         <p className="TaskPage1">შექმენი ახალი დავალება</p>
+         <div className="w-[1684px] h-[958px] mt-[25px] ml-[118px] rounded-[4px] border-[0.3px] border-[#DDD2FF] bg-[#FBF9FFA6] relative">
             {showSuccessPopup && <SuccessPopup />}
             
             <TaskForm 
@@ -56,7 +82,6 @@ function TaskCreator({ isModalOpen, onClose }) {
                 handleEmployeeSelect={handleEmployeeSelect}
                 onDateSelect={handleDateSelect}
                 selectedDepartment={selectedDepartment}
-                isModalOpen={isModalOpen}
             />
 
             <div className="w-[1261px] h-[42px] top-[700px] left-[55px] absolute flex items-center justify-end gap-[10px]">
@@ -66,6 +91,8 @@ function TaskCreator({ isModalOpen, onClose }) {
                 />
             </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+       </div>
     );
 }
 

@@ -55,11 +55,11 @@ function CardDescription({task}) {
 
                 </div>
 
-                <h2 className="text-[32px] font-[Inter] font-semibold leading-[100%] tracking-[0%]">{task.name}</h2>        
+                <h2 className="text-[34px] font-[Inter] font-semibold leading-[100%] tracking-[0%]">{task.name}</h2>        
                 
             </div>
 
-            <div className = "w-[715px] h-[108px] flex gap-[10px] overflow-y-auto">
+            <div className = "w-[715px] h-[108px] flex gap-[10px] overflow-y-auto font-[FiraGO] text-[18px] leading-[150%] tracking-[0%] font-normal">
                 {task.description}
             </div>
         </div>

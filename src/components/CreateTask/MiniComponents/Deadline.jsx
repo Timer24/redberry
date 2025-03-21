@@ -11,16 +11,30 @@ const CustomDatePicker = ({ onDateSelect }) => {
   const [tempDate, setTempDate] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const getDefaultDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return tomorrow;
+  };
+
   useEffect(() => {
     const storedDate = localStorage.getItem("selectedDate");
     if (storedDate) {
-      const date = new Date(storedDate);
-      setSelectedDate(date);
-      setTempDate(date);
+      const date = new Date(storedDate);    
+      const today = new Date();
+      if (date < today) {
+        const newDate = getDefaultDate();
+        setSelectedDate(newDate);
+        setTempDate(newDate);
+        localStorage.setItem("selectedDate", newDate.toISOString());
+        onDateSelect(formatDate(newDate));
+      } else {
+        setSelectedDate(date);
+        setTempDate(date);
+      }
     } else {
-      
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrow = getDefaultDate();
       setSelectedDate(tomorrow);
       setTempDate(tomorrow);
       localStorage.setItem("selectedDate", tomorrow.toISOString());
@@ -30,15 +44,11 @@ const CustomDatePicker = ({ onDateSelect }) => {
 
   useEffect(() => {
     const handleReset = (event) => {
-        
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-      
-        setSelectedDate(tomorrow);
-        setTempDate(tomorrow);
-        localStorage.setItem("selectedDate", tomorrow.toISOString());
-        onDateSelect(formatDate(tomorrow));
+      const tomorrow = getDefaultDate();
+      setSelectedDate(tomorrow);
+      setTempDate(tomorrow);
+      localStorage.setItem("selectedDate", tomorrow.toISOString());
+      onDateSelect(formatDate(tomorrow));
     };
     
     window.addEventListener('resetTaskForm', handleReset);
@@ -74,6 +84,7 @@ const CustomDatePicker = ({ onDateSelect }) => {
   };
 
   const formatDate = (date) => {
+    if (!date) return '';
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();

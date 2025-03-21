@@ -4,11 +4,12 @@ import Header1 from './components/Header/HeaderMain'
 import '@fontsource/firago';
 import { Routes, Route, useLocation } from "react-router-dom";
 import Cards from './components/Cards/Cards'
+import TaskCreator from './components/CreateTask/TaskCreator';
 
 
 const Filters = lazy(() => import('./components/Filters/Filters'));
 const Modal = lazy(() => import('./components/CreateEmployee/Modal'));
-const CreateNewTask = lazy(() => import('./components/CreateTask/CreateNewTask'));
+const CreateNewTask = lazy(() => import('./components/CreateTask/TaskCreator'));
 const CardInner = lazy(() => import('./components/Cards/CardsInner/CardInner'));
 
 
@@ -73,10 +74,9 @@ function App() {
           <Route 
             path="/create-task" 
             element={
-              <CreateNewTask 
-                isModalOpen={handleOpenModal} 
-                onClose={handleCloseModal} 
-              />
+              <Suspense fallback={<LoadingSpinner />}>
+                <TaskCreator />
+              </Suspense>
             } 
           />
           <Route path="/tasks/:taskId" element={<CardInner />} />
@@ -87,7 +87,7 @@ function App() {
 
   function LandingPage() {
     return (
-      <div>
+      <div className="pt-[100px]">
         <Header1 handleOpenModal={handleOpenModal} />
         <p className="TaskPage1">დავალებების გვერდი</p>
         
