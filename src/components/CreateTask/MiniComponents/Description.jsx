@@ -1,13 +1,37 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { IoMdCheckmark } from "react-icons/io";
 
+const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+    };
+};
 
 const getValidationColor = (isValid) => {
     if (isValid === null) return 'text-[#6C757D]'; 
     return isValid ? 'text-[#08A508]' : 'text-[#FA4D4D]';
 };
 
-function Description({ formState, validationState, onInputChange, isValidLength, isValidWords }) {
+function Description({ formState, onInputChange }) {
+    const [isValidLength, setIsValidLength] = useState(null);
+    const [isValidWords, setIsValidWords] = useState(null);
+
+    const validateInput = useCallback((value) => {
+        const words = value.trim().split(/\s+/);
+        setIsValidLength(value.length <= 255);
+        setIsValidWords(words.length >= 4);
+    }, []);
+
+    const debouncedValidateInput = useCallback(debounce(validateInput, 500), [validateInput]);
+
+    const handleChange = (e) => {
+        const { value } = e.target;
+        onInputChange(e); 
+        debouncedValidateInput(value); 
+    };
+
     return (
         <div className="w-[550px] h-[133px] top-0 left-0">
             <div className="w-[384px] h-[102px] relative">
@@ -20,7 +44,7 @@ function Description({ formState, validationState, onInputChange, isValidLength,
                         className="w-[550px] h-[133px] rounded-[5px] border-[1px] flex flex-wrap p-[14px] gap-[10px]"
                         name="description"
                         value={formState.description}
-                        onChange={onInputChange}
+                        onChange={handleChange}
                         style={{ resize: 'none' }}
                     />
                 </div>

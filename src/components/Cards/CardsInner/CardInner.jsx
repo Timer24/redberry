@@ -14,8 +14,6 @@ function OpenCard({totalComments}) {
 
   const { data: task, isLoading, error } = useFetchGet(`tasks/${taskId}`);
 
-  console.log("ygbfiujkydsbuiksdfg", task)
-
   return (
     <div>
         <Header1/>

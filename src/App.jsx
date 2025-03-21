@@ -14,7 +14,7 @@ const CardInner = lazy(() => import('./components/Cards/CardsInner/CardInner'));
 
 
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center h-[200px]">
+  <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-70 z-50">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8338EC]"></div>
   </div>
 );
@@ -56,8 +56,6 @@ function App() {
     }
   }, [selectedEmployee, selectedPriorities, selectedDepartments, location.pathname]);
 
-  console.log(selectedDepartments);
-
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -91,7 +89,7 @@ function App() {
         <Header1 handleOpenModal={handleOpenModal} />
         <p className="TaskPage1">დავალებების გვერდი</p>
         
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense>
           <Filters 
             setSelectedEmployee={setSelectedEmployee} 
             selectedEmployee={selectedEmployee}
@@ -102,7 +100,7 @@ function App() {
           />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback = {<LoadingSpinner/>}>
           <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
         </Suspense>
 

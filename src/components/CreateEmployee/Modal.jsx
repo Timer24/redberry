@@ -129,14 +129,8 @@ function Modal({ isOpen, onClose }) {
       formData.append('avatar', formState.avatar);
     }
 
-    
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-
     try {
       const result = await postData(formData);
-      console.log('API Response:', result);
       
       setShowSuccessPopup(true);
       setTimeout(() => {

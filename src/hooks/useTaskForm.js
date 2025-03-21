@@ -278,13 +278,6 @@ export const useTaskForm = () => {
             priority_id: formState.priority_id,
         };
 
-        console.log('Form validation state:', {
-            validationState,
-            nameLength: formState.name.length,
-            isFormValid: isFormValid(),
-            formState
-        });
-
         try {
             const response = await fetch("https://momentum.redberryinternship.ge/api/tasks", {
                 method: "POST",

@@ -112,13 +112,13 @@ function Filters({selectedEmployee, setSelectedEmployee, selectedPriorities, set
         <IoIosArrowDown className="mt-[3px] ml-[8px]"/>
       </button>
         {employeeOpen && (
-          <EmployeeDropdown filtersBarRef={filtersBarRef} selectedEmployee={selectedEmployee} setSelectedEmployee={setSelectedEmployee} style={{ zIndex: 100 }} />
+          <EmployeeDropdown filtersBarRef={filtersBarRef} selectedEmployee={selectedEmployee} setSelectedEmployee={setSelectedEmployee} employees={employees} style={{ zIndex: 100 }} />
         )}
         {priorityOpen && (
-          <PriorityDropdown filtersBarRef={filtersBarRef} selectedPriorities={selectedPriorities} setSelectedPriorities={setSelectedPriorities} style={{ zIndex: 100 }} />
+          <PriorityDropdown filtersBarRef={filtersBarRef} selectedPriorities={selectedPriorities} setSelectedPriorities={setSelectedPriorities} priorities = {priorities} style={{ zIndex: 100 }} />
         )}
         {departmentOpen && (
-          <DepartmentDropdown filtersBarRef={filtersBarRef} selectedDepartments={selectedDepartments} setSelectedDepartments={setSelectedDepartments} style={{ zIndex: 100 }} />
+          <DepartmentDropdown filtersBarRef={filtersBarRef} selectedDepartments={selectedDepartments} setSelectedDepartments={setSelectedDepartments} departments = {departments} style={{ zIndex: 100 }} />
         )}
 
         <div className="min-h-[34px] w-[1680px] flex gap-2 absolute left-0 top-[52px] flex-wrap">

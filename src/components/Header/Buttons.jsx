@@ -18,7 +18,7 @@ function Buttons({ handleOpenModal }) {
 
   return (
     <div className="flex gap-[40px]">
-        <button onClick={handleOpenModal}
+        <button type="button" onClick={handleOpenModal}
         className="font-style-1 flex justify-center items-center w-[225px] h-[39px] top-[20px] left-[20px] border-[1px] border-[#8338EC] rounded-[5px] px-[10px] py-[20px] gap-[10px] hover:border-[#B588F4]">
             თანამშრომლის შექმნა
         </button>

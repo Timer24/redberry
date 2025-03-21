@@ -41,7 +41,6 @@ function TaskDetails({task}) {
                 }
 
                 const statusesData = await response.json();
-                console.log("Statuses data:", statusesData);
                 setStatuses(statusesData);
             } catch (err) {
                 console.error('Error fetching statuses:', err);

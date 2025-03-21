@@ -2,13 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDropdown } from '../../DropdownContext';
 import useFetchGet from '../../hooks/useFetchGet';
 
-function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriorities }) {
+function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriorities, priorities }) {
   const { toggleDropdown } = useDropdown();
   const dropdownRef = useRef(null);
-  const { data: priorities, error, loading } = useFetchGet('priorities');
-
-  
-  
   const [tempSelectedPriorities, setTempSelectedPriorities] = useState([]); 
 
   const handleCheckboxChange = (event) => {
@@ -27,6 +23,10 @@ function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriori
     setSelectedPriorities(tempSelectedPriorities); 
     toggleDropdown("priority"); 
   };
+
+  useEffect (() => {
+    setTempSelectedPriorities(selectedPriorities);
+  }, []);
 
 
   useEffect(() => {
@@ -47,11 +47,6 @@ function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriori
   return (
     <div ref={dropdownRef} className="absolute top-[55px] w-[688px] h-[230px] z-50 bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
       <div className="flex-grow overflow-y-auto pr-[5px] mt-[40px]" style={{ maxHeight: 'calc(100% - 70px)' }}>
-        {loading ? (
-          <div className="m-auto">Loading priorities...</div>
-        ) : error ? (
-          <div className="m-auto">Error: {error}</div>
-        ) : (
           <ul className="flex flex-col space-y-[25px]">
             {priorities && priorities.length > 0 ? (
               priorities.map((priority) => (
@@ -101,7 +96,6 @@ function PriorityDropdown({ filtersBarRef, selectedPriorities, setSelectedPriori
               <li className="m-auto">No priorities available</li>
             )}
           </ul>
-        )}
       </div>
       <div className="flex justify-end p-[20px]">
         <button

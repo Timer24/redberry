@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDropdown } from '../../DropdownContext';
 import useFetchGet from '../../hooks/useFetchGet';
 
-function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee }) {
+function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee, employees }) {
   const { toggleDropdown } = useDropdown();
   const dropdownRef = useRef(null);
-  const { data: employees, error, loading } = useFetchGet('employees');
   const [tempSelectedEmployee, setTempSelectedEmployee] = useState(null); 
 
   useEffect(() => {
@@ -23,10 +22,20 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
     };
   }, [toggleDropdown, filtersBarRef]);
 
+  useEffect (() => {
+    setTempSelectedEmployee(selectedEmployee);
+  }, []);
+
   const handleCheckboxChange = (event) => {
-    console.log(event.target);
     const { value } = event.target;
-    setTempSelectedEmployee(value);
+    if (value === selectedEmployee) {
+      setTempSelectedEmployee(null);
+    }
+    else{
+      setTempSelectedEmployee(value);
+    }
+  
+    
   };
 
   const handleSubmit = () => {
@@ -38,11 +47,6 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
   return (
     <div ref={dropdownRef} className="absolute top-[55px] w-[688px] z-50 h-[280px] bg-white border border-[#8338EC] rounded-md px-[30px] flex flex-col">
       <div className="flex-grow overflow-y-auto pr-[5px] z-50 mt-[40px] max-h-[180px]">
-        {loading ? (
-          <div className="m-auto">Loading employees...</div>
-        ) : error ? (
-          <div className="m-auto">Error: {error}</div>
-        ) : (
           <ul className="flex flex-col space-y-[15px]">
             {employees && employees.length > 0 ? (
               employees.map((employee) => (
@@ -93,7 +97,6 @@ function EmployeeDropdown({ filtersBarRef, selectedEmployee, setSelectedEmployee
               <li className="m-auto">No employees available</li>
             )}
           </ul>
-        )}
       </div>
       <div className="flex justify-end p-[20px]">
         <button
